@@ -10,6 +10,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.CommandBase;
 
@@ -29,8 +30,8 @@ public class TeleopDefault extends Command {
   @Override
   protected void execute() {
     double forwardSpeed, lateralSpeed; 
-    forwardSpeed = CommandBase.controls.Driver.getX(Hand.kLeft);
-    lateralSpeed = CommandBase.controls.Driver.getY(Hand.kRight);
+    forwardSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
+    lateralSpeed = CommandBase.controls.Driver.getX(Hand.kRight);
     CommandBase.drivetrain.Drive(lateralSpeed - forwardSpeed, lateralSpeed + forwardSpeed);
   }
 
