@@ -5,7 +5,6 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-// Hello, World!    # Delete me //
 package frc.robot;
 import frc.robot.OI;
 import frc.robot.subsystems.DriveTrain;
