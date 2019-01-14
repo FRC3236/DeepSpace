@@ -14,8 +14,8 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.CommandBase;
 
-public class TeleopTriggerControl extends Command {
-  public TeleopTriggerControl() {
+public class TeleopDefault extends Command {
+  public TeleopDefault() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     // Delete me
@@ -30,30 +30,10 @@ public class TeleopTriggerControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    boolean forward_acceleration = CommandBase.controls.Driver.getXButtonPressed();
-    boolean backward_acceleration = CommandBase.controls.Driver.getAButtonPressed();
-    boolean forward_stop = CommandBase.controls.Driver.getXButtonReleased();
-    boolean backward_stop = CommandBase.controls.Driver.getAButtonReleased();
-    double multiplier = CommandBase.controls.Driver.getY(Hand.kRight);
-
-
-    if(!forward_stop){
-      if (forward_acceleration){
-          CommandBase.drivetrain.Drive(multiplier, -multiplier);
-        }
-      }
-
-    if(!backward_stop){
-      if (backward_acceleration){
-        CommandBase.drivetrain.Drive(-multiplier, multiplier);
-          }
-      }
-    
-    if (forward_stop || backward_stop){
-      CommandBase.drivetrain.Drive(0, 0);
-    }
-
-    //CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
+    double forwardSpeed, lateralSpeed; 
+    forwardSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
+    lateralSpeed = CommandBase.controls.Driver.getX(Hand.kRight);
+    CommandBase.drivetrain.Drive(lateralSpeed - forwardSpeed, lateralSpeed + forwardSpeed);
   }
 
   // Make this return true when this Command no longer needs to run execute()
