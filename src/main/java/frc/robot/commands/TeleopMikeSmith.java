@@ -45,13 +45,13 @@ public class TeleopMikeSmith extends Command {
   }*/
   @Override
   protected void execute() {
-    double backwardSpeed, forwardSpeed, lateralSpeed; 
+    double backwardSpeed, forwardSpeed, lateralSpeed, sensitivityMultiplier; 
     backwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft); //leftspeed = Left Xbox Trigger axis
     forwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);//rightside speed = Right Xbox trigger
     lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
-    
+    sensitivityMultiplier = CommandBase.controls.Driver.getY(Hand.kRight); //Sensitivity multiplier of lateral speed from Right Xbox Stick Y Axis
 
-    CommandBase.drivetrain.Drive((backwardSpeed * -1) + forwardSpeed + lateralSpeed, (backwardSpeed) + lateralSpeed + (forwardSpeed * -1));
+    CommandBase.drivetrain.Drive((backwardSpeed * -1) + forwardSpeed + (lateralSpeed /(sensitivityMultiplier / 5) ), (backwardSpeed) + (lateralSpeed / ( sensitivityMultiplier / 5)) + (forwardSpeed * -1));
     //elevatorspeed = CommandBase.controls
   }
 
