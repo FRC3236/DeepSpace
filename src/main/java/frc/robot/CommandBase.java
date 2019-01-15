@@ -7,9 +7,10 @@
 
 package frc.robot;
 import frc.robot.OI;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.*;
 
 public class CommandBase {
+  public static VisionRocket visionRocket = new VisionRocket();
   public static OI controls = new OI(); 
   public static DriveTrain drivetrain = new DriveTrain();
 }
