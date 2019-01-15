@@ -28,32 +28,46 @@ public class TeleopTriggerControl extends Command {
 
   }
 
-  // Called repeatedly when this Command is scheduled to run
+  // Called repeatedly when this Command is scheduled to r`un
   @Override
   protected void execute() {
+    
     boolean forward_acceleration = CommandBase.controls.Driver.getXButton();
     boolean backward_acceleration = CommandBase.controls.Driver.getAButton();
     boolean forward_stop = CommandBase.controls.Driver.getXButtonReleased();
     boolean backward_stop = CommandBase.controls.Driver.getAButtonReleased();
+    double direction = CommandBase.controls.Driver.getX(Hand.kLeft);
+    double multiplier = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
 
-    
-    if (forward_acceleration){
-      double multiplier = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
-        SmartDashboard.putNumber("Multi", multiplier);
-      CommandBase.drivetrain.Drive(multiplier, -multiplier);
+    SmartDashboard.putNumber("Multi", multiplier);
+    SmartDashboard.putNumber("Direction:", direction);
+    //if (direction) > 0.2:
+      
+    if (forward_acceleration && multiplier > 0 ){
+      SmartDashboard.putNumber("Usable direction:", direction);
+      if (direction > 0.25 || direction < -0.25){
+        CommandBase.drivetrain.Drive(multiplier, -multiplier+direction);
+
       }
-
-    if (backward_acceleration){
-      double multiplier = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
-      SmartDashboard.putNumber("Multi", multiplier);
-      CommandBase.drivetrain.Drive(-multiplier, multiplier);
+      else{
+        CommandBase.drivetrain.Drive(multiplier, -multiplier);
+      }
+    }
+    if (backward_acceleration && multiplier > 0){
+      if (direction > 0.25 || direction < -0.25){
+        CommandBase.drivetrain.Drive(-multiplier+direction, multiplier);
+      }
+      else{
+        CommandBase.drivetrain.Drive(-multiplier, multiplier);
         }
+      }
     
     if (forward_stop || backward_stop){
       CommandBase.drivetrain.Drive(0, 0);
     }
 
     //CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
+ 
   }
 
   // Make this return true when this Command no longer needs to run execute()

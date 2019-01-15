@@ -27,7 +27,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static CommandBase cmdBase;
-  public static TeleopDefault teleop;
+  public static TeleopTriggerControl teleop;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     cmdBase = new CommandBase();
     //CommandBase.drivetrain.InvertTalons();
-    teleop = new TeleopDefault();
+    teleop = new TeleopTriggerControl();
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
