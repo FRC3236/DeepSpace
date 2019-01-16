@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TeleopMikeSmith;
 
-import frc.robot.commands.TeleopTriggerControl;
+import frc.robot.commands.TeleopDefault;
 
 import frc.robot.subsystems.ExampleSubsystem;
 
