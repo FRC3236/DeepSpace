@@ -51,7 +51,10 @@ public class TeleopMikeSmith extends Command {
     lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
     sensitivityMultiplier = CommandBase.controls.Driver.getY(Hand.kRight); //Sensitivity multiplier of lateral speed from Right Xbox Stick Y Axis
 
-    CommandBase.drivetrain.Drive((backwardSpeed * -1) + forwardSpeed + (lateralSpeed /(sensitivityMultiplier / 5) ), (backwardSpeed) + (lateralSpeed / ( sensitivityMultiplier / 5)) + (forwardSpeed * -1));
+    double scaledSensitivity = (sensitivityMultiplier/5);
+    double leftSpeed = -backwardSpeed + forwardSpeed + (lateralSpeed/sensitivityMultiplier);
+    double rightSpeed = backwardSpeed + (lateralSpeed/scaledSensitivity) -forwardSpeed;
+    CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
     //elevatorspeed = CommandBase.controls
   }
 
