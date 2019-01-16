@@ -34,27 +34,27 @@ public class TeleopMikeSmith extends Command {
 
 
   // Called repeatedly when this Command is scheduled to run
-
- /* @Override
+/*
+  @Override
   protected void execute() {
     double leftsideSpeed, rightsideSpeed; 
     leftsideSpeed = CommandBase.controls.Driver.getY(Hand.kLeft); //leftspeed = Left Xbox Stick Y axis
     rightsideSpeed = CommandBase.controls.Driver.getY(Hand.kRight);//rightside speed = Right Xbox Stick Y axis
     CommandBase.drivetrain.Drive(-leftsideSpeed, rightsideSpeed);
     //elevatorspeed = CommandBase.controls
-  }*/
+  } */
+  
   @Override
   protected void execute() {
-    double backwardSpeed, forwardSpeed, lateralSpeed, sensitivityMultiplier; 
+    double backwardSpeed, forwardSpeed, lateralSpeed; 
     backwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft); //leftspeed = Left Xbox Trigger axis
     forwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);//rightside speed = Right Xbox trigger
     lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
-    sensitivityMultiplier = CommandBase.controls.Driver.getY(Hand.kRight); //Sensitivity multiplier of lateral speed from Right Xbox Stick Y Axis
+  
 
-    double scaledSensitivity = (sensitivityMultiplier/5);
-    double leftSpeed = -backwardSpeed + forwardSpeed + (lateralSpeed/sensitivityMultiplier);
-    double rightSpeed = backwardSpeed + (lateralSpeed/scaledSensitivity) -forwardSpeed;
-    CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
+    double leftSpeed = -backwardSpeed + forwardSpeed;
+    double rightSpeed = backwardSpeed - forwardSpeed + lateralSpeed;
+    CommandBase.drivetrain.Drive(leftSpeed, rightSpeed); 
     //elevatorspeed = CommandBase.controls
   }
 
