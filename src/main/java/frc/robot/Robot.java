@@ -14,7 +14,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TeleopDefault;
+<<<<<<< HEAD
 import frc.robot.commands.TeleopTriggerControl;
+=======
+>>>>>>> bd39bf9fd92ec0fb01df34982a8caf65e5cb5f9b
 import frc.robot.subsystems.ExampleSubsystem;
 
 /**
@@ -27,7 +30,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static CommandBase cmdBase;
-  public static TeleopTriggerControl teleop;
+  public static TeleopDefault teleop;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -40,7 +43,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     cmdBase = new CommandBase();
     //CommandBase.drivetrain.InvertTalons();
-    teleop = new TeleopTriggerControl();
+    teleop = new TeleopDefault();
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
