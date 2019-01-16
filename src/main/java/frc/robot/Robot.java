@@ -14,10 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TeleopDefault;
-<<<<<<< HEAD
 import frc.robot.commands.TeleopTriggerControl;
-=======
->>>>>>> bd39bf9fd92ec0fb01df34982a8caf65e5cb5f9b
 import frc.robot.subsystems.ExampleSubsystem;
 
 /**
