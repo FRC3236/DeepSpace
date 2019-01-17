@@ -45,10 +45,18 @@ public class VisionRocket extends Subsystem {
 		Number[] ratios = ntratios.getNumberArray(def);
 		Number[] areas = ntareas.getNumberArray(def);
 
+		int smallestLen = 1000;
+		if (widths.length < smallestLen) { smallestLen = widths.length; }
+		if (heights.length < smallestLen) { smallestLen = heights.length; }
+		if (xs.length < smallestLen) { smallestLen = xs.length; }
+		if (ys.length < smallestLen) { smallestLen = ys.length; }
+		if (ratios.length < smallestLen) { smallestLen = ratios.length; }
+		if (areas.length < smallestLen) { smallestLen = areas.length; }
+
 		ArrayList<ArrayList<Double>> contours = new ArrayList<ArrayList<Double>>();
 
-		if (widths.length > 0) {
-			for (int i = 0; i < widths.length; i++) {
+		if (smallestLen > 0) {
+			for (int i = 0; i < smallestLen; i++) {
 				ArrayList<Double> newContour = new ArrayList<Double>();
 				newContour.add((double)xs[i]);
 				newContour.add((double)ys[i]);
@@ -92,14 +100,96 @@ public class VisionRocket extends Subsystem {
 					newPair.add(contours.get(i));
 					newPair.add(contours.get(j));
 
-					SmartDashboard.putNumber("ContourPair1", contours.get(i).get(0));
-					SmartDashboard.putNumber("ContourPair2", contours.get(j).get(0));
-
 					pairs.add(newPair);
 				}
 
 			}
 		}
 		return pairs;
+	}
+
+	public ArrayList<Double> DriveToPair(int mode, double speed) {
+		// mode 0 is cargo (center), mode 1 is the hatch panel (sides)
+		
+		// speeds.get(0) is the left side of the drive train, speeds.get(1) is the right side
+		ArrayList<Double> speeds = new ArrayList<Double>();
+
+		ArrayList<ArrayList<ArrayList<Double>>> pairs = GetContourPairs();
+		if (pairs.size() > 0) {
+
+			if (pairs.size() > 1) {
+				//
+			} else {
+				ArrayList<ArrayList<Double>> pair = SortContours(pairs.get(0), 0);
+				ArrayList<Double> contourA = pair.get(0);
+				ArrayList<Double> contourB = pair.get(1);
+
+				double leftX = contourA.get(0) + (double)(contourA.get(2)/2);
+				double leftY = contourA.get(1) + (double)(contourA.get(3)/2);
+				
+				double rightX = contourB.get(0) + (double)(contourB.get(2)/2);
+				double rightY = contourB.get(1) + (double)(contourB.get(3)/2);
+
+				NetworkTableEntry ntCamWidth = visionTable.getEntry("camWidth");
+				NetworkTableEntry ntCamHeight = visionTable.getEntry("camHeight");
+				double camWidth = ntCamWidth.getDouble(0);
+				double camHeight = ntCamHeight.getDouble(0);
+
+				double cameraX = camWidth/2;
+				double pairX = leftX + (rightX-leftX)/2;
+
+				double offset = pairX - cameraX;
+
+				// Make speedScaleConstant bigger if you want robot to slow down over a longer distance, and smaller if you want it to slow down over a shorter distance
+				double speedScaleConstant = 8;
+				double speedScale = Math.min(speedScaleConstant / (contourA.get(2) + contourB.get(2))/2, 1.0);
+				double scaledSpeed = Math.min(speed * speedScale, 1.0);
+
+				// Increase subScale to make adjustment less extreme //
+				double subScale = 3;
+			
+				if (Math.abs(offset) > 5) {
+
+					if (offset > 0) {
+						// Angled too far to left
+						speeds.add(scaledSpeed);
+						
+						// Slow down right side
+						double scale = Math.min(1, subScale / Math.abs(offset));
+						speeds.add(-(scaledSpeed * scale));
+					} else {
+						// Angled too far to right
+						// Slow down left side
+						/*double scale = (Math.abs(offset) / (camWidth/2));
+						speeds.add(scaledSpeed - scaledSpeed * scale);*/
+						double scale = Math.min(1, subScale / Math.abs(offset));
+						speeds.add(scaledSpeed * scale);
+
+						speeds.add(-scaledSpeed);
+						
+					}
+
+				} else {
+					speeds.add(scaledSpeed);
+					speeds.add(-scaledSpeed);
+				}
+
+
+			}
+
+		} else {
+			// Set both sides to 0
+			speeds.add(0.0);
+			speeds.add(0.0);
+			
+		}
+
+
+		if (speeds.size() != 2) {
+			speeds = new ArrayList<Double>();
+			speeds.add(0.0);
+			speeds.add(0.0);
+		}
+		return speeds;
 	}
 }
