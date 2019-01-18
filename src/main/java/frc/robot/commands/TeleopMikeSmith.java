@@ -52,7 +52,7 @@ public class TeleopMikeSmith extends Command {
     lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
   
 
-    double leftSpeed = -backwardSpeed + forwardSpeed;
+    double leftSpeed = -backwardSpeed + forwardSpeed + lateralSpeed;
     double rightSpeed = backwardSpeed - forwardSpeed + lateralSpeed;
     CommandBase.drivetrain.Drive(leftSpeed, rightSpeed); 
     //elevatorspeed = CommandBase.controls
