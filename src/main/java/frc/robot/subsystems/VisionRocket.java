@@ -7,8 +7,15 @@
 
 package frc.robot.subsystems;
 
+
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.CommandBase;
+import frc.robot.CommandBase.*;
+
+import org.team3236.contours.*;
+import org.team3236.AssistMode;
+import org.team3236.DriveTrainMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +35,11 @@ public class VisionRocket extends Subsystem {
 	private static NetworkTableInstance ntInst = NetworkTableInstance.getDefault();
 	private static NetworkTable visionTable = ntInst.getTable("contours");
 
-	public ArrayList<ArrayList<Double>> GetContours() {
+	private static enum RocketSide {
+		RIGHT, LEFT
+	}
+
+	public ArrayList<Contour> GetContours() {
 		NetworkTableEntry ntwidths = visionTable.getEntry("width");
 		NetworkTableEntry ntheights = visionTable.getEntry("height");
 		NetworkTableEntry ntxs = visionTable.getEntry("x");
@@ -53,17 +64,26 @@ public class VisionRocket extends Subsystem {
 		if (ratios.length < smallestLen) { smallestLen = ratios.length; }
 		if (areas.length < smallestLen) { smallestLen = areas.length; }
 
-		ArrayList<ArrayList<Double>> contours = new ArrayList<ArrayList<Double>>();
+		ArrayList<Contour> contours = new ArrayList<Contour>();
 
 		if (smallestLen > 0) {
 			for (int i = 0; i < smallestLen; i++) {
-				ArrayList<Double> newContour = new ArrayList<Double>();
+				/*ArrayList<Double> newContour = new ArrayList<Double>();
 				newContour.add((double)xs[i]);
 				newContour.add((double)ys[i]);
 				newContour.add((double)widths[i]);
 				newContour.add((double)heights[i]);
 				newContour.add((double)areas[i]);
-				newContour.add((double)ratios[i]);
+				newContour.add((double)ratios[i]);*/
+
+				Contour newContour = new Contour(
+					(double)xs[i],
+					(double)ys[i],
+					(double)widths[i],
+					(double)heights[i],
+					(double)areas[i],
+					(double)ratios[i]
+				);
 
 				// Add this contour to the main list of contours //
 				contours.add(newContour);
@@ -72,23 +92,23 @@ public class VisionRocket extends Subsystem {
 		return contours;
 	}
 
-	public ArrayList<ArrayList<Double>> SortContours(ArrayList<ArrayList<Double>> contours, int index) {
-		Collections.sort(contours, new Comparator<ArrayList<Double>>() {
+	public ArrayList<Contour> SortContours(ArrayList<Contour> contours, int index) {
+		Collections.sort(contours, new Comparator<Contour>() {
             @Override
-            public int compare(ArrayList<Double> a1, ArrayList<Double> a2) {
-                return a1.get(index).compareTo(a2.get(index));
+            public int compare(Contour a1, Contour a2) {
+                return Double.compare(a1.get(index), a2.get(index));
             }
 		});
 		return contours;
 	}
 
-	public ArrayList<ArrayList<ArrayList<Double>>> GetContourPairs() {
-		ArrayList<ArrayList<Double>> contours = GetContours();
+	public ArrayList<ContourPair> GetContourPairs() {
+		ArrayList<Contour> contours = GetContours();
 		
 		// Sort the contours! //
 		contours = SortContours(contours, 1);
 
-		ArrayList<ArrayList<ArrayList<Double>>> pairs = new ArrayList<ArrayList<ArrayList<Double>>>();
+		ArrayList<ContourPair> pairs = new ArrayList<ContourPair>();
 
 		for (int i = 0; i < contours.size()-1; i++) {
 			for (int j = i+1; j < contours.size(); j++) {
@@ -96,9 +116,7 @@ public class VisionRocket extends Subsystem {
 				double secondY = contours.get(j).get(1);
 
 				if ((firstY/secondY) >= 0.9) {
-					ArrayList<ArrayList<Double>> newPair = new ArrayList<ArrayList<Double>>();
-					newPair.add(contours.get(i));
-					newPair.add(contours.get(j));
+					ContourPair newPair = new ContourPair(contours.get(i), contours.get(j));
 
 					pairs.add(newPair);
 				}
@@ -108,27 +126,30 @@ public class VisionRocket extends Subsystem {
 		return pairs;
 	}
 
-	public ArrayList<Double> DriveToPair(int mode, double speed) {
-		// mode 0 is cargo (center), mode 1 is the hatch panel (sides)
+	public ArrayList<Double> DriveToPair(AssistMode mode, double speed) {
 		
 		// speeds.get(0) is the left side of the drive train, speeds.get(1) is the right side
 		ArrayList<Double> speeds = new ArrayList<Double>();
 
-		ArrayList<ArrayList<ArrayList<Double>>> pairs = GetContourPairs();
+		ArrayList<ContourPair> pairs = GetContourPairs();
 		if (pairs.size() > 0) {
 
 			if (pairs.size() > 1) {
-				//
-			} else {
-				ArrayList<ArrayList<Double>> pair = SortContours(pairs.get(0), 0);
-				ArrayList<Double> contourA = pair.get(0);
-				ArrayList<Double> contourB = pair.get(1);
+				if (mode == AssistMode.CARGOROCKET) {
 
-				double leftX = contourA.get(0) + (double)(contourA.get(2)/2);
-				double leftY = contourA.get(1) + (double)(contourA.get(3)/2);
+				} else if (mode == AssistMode.HATCH) {
+
+				}
+			} else {
+				ArrayList<Contour> pair = SortContours(pairs.get(0).getContours(), 0);
+				Contour contourA = pair.get(0);
+				Contour contourB = pair.get(1);
+
+				double leftX = contourA.getX() + (double)(contourA.getWidth()/2);
+				double leftY = contourA.getY() + (double)(contourA.getHeight()/2);
 				
-				double rightX = contourB.get(0) + (double)(contourB.get(2)/2);
-				double rightY = contourB.get(1) + (double)(contourB.get(3)/2);
+				double rightX = contourB.getX() + (double)(contourB.getWidth()/2);
+				double rightY = contourB.getY() + (double)(contourB.getHeight()/2);
 
 				NetworkTableEntry ntCamWidth = visionTable.getEntry("camWidth");
 				NetworkTableEntry ntCamHeight = visionTable.getEntry("camHeight");
@@ -142,7 +163,7 @@ public class VisionRocket extends Subsystem {
 
 				// Make speedScaleConstant bigger if you want robot to slow down over a longer distance, and smaller if you want it to slow down over a shorter distance
 				double speedScaleConstant = 8;
-				double speedScale = Math.min(speedScaleConstant / (contourA.get(2) + contourB.get(2))/2, 1.0);
+				double speedScale = Math.min(speedScaleConstant / (contourA.getWidth() + contourB.getWidth()/2), 1.0);
 				double scaledSpeed = Math.min(speed * speedScale, 1.0);
 
 				// Increase subScale to make adjustment less extreme //
@@ -190,6 +211,103 @@ public class VisionRocket extends Subsystem {
 			speeds.add(0.0);
 			speeds.add(0.0);
 		}
+		return speeds;
+	}
+
+	public ArrayList<Double> DriveAlongArc(AssistMode mode, double speed) {
+		
+		ArrayList<Double> speeds = new ArrayList<Double>();
+
+
+		double distanceToRocket = CommandBase.drivetrain.GetDistance();
+		double gyroAngle = CommandBase.drivetrain.GetAngle();
+		int gyroAngleInt = (int)Math.round(gyroAngle);
+
+		double desiredAngle;
+
+		double width = distanceToRocket * Math.cos(gyroAngle);
+		double depth = distanceToRocket * Math.sin(gyroAngle);
+		double moddedAngle = Math.floorMod(gyroAngleInt, 360);
+
+		if (mode == AssistMode.CARGOROCKET) {
+
+		} else if (mode == AssistMode.HATCH) {
+			if (moddedAngle >= 0 && moddedAngle < 90) {
+				desiredAngle = 60;
+			} else if (moddedAngle >= 90 && moddedAngle < 180) {
+				desiredAngle = 120;
+			} else if (moddedAngle >= 180 && moddedAngle < 270) {
+				desiredAngle = 240;
+			} else {
+				desiredAngle = 300;
+			}
+
+			SmartDashboard.putNumber("Desired", desiredAngle);
+			SmartDashboard.putNumber("Modded", moddedAngle);
+			// Check to see if we can free up the drive train //
+			if (Math.abs(moddedAngle - desiredAngle) < 5) {
+				CommandBase.drivetrain.UnlockAuto();
+				speeds.add(0.0);
+				speeds.add(0.0);
+				return speeds;
+			}
+
+			double normalAngle, theta; 
+			if (moddedAngle <= desiredAngle) {
+				normalAngle = desiredAngle - 90;
+				theta = 90 - (moddedAngle-normalAngle);
+			} else {
+				normalAngle = desiredAngle + 90;
+				theta = 90 - (normalAngle-moddedAngle);
+			}
+			double phi = 90 - theta;
+
+			// Check if our current angle is within 10 degrees of our normal angle
+			if (Math.abs(moddedAngle - normalAngle%360) > 10) {
+				// Tell the drivetrain to spin //
+				double turnSpeed = 0.3;
+				if (moddedAngle > desiredAngle) {
+					speeds.add(turnSpeed);
+					speeds.add(-turnSpeed);
+				} else {
+					speeds.add(-turnSpeed);
+					speeds.add(turnSpeed);
+				}
+				SmartDashboard.putNumber("Speed Left", speeds.get(0));
+				SmartDashboard.putNumber("Speed Right", speeds.get(1));
+				return speeds;
+			}
+
+			// We can follow the arc now! //
+			double wheelBase = 23.0;
+			// New robot 2019 is 21.5;//
+
+			double masterRadius = (depth/2) / Math.sin(theta);
+			double innerRadius = masterRadius - wheelBase;
+			double outerRadius = masterRadius + wheelBase;
+			double omega = speed/masterRadius;
+
+			double innerSpeed = innerRadius * omega;
+			double outerSpeed = outerRadius * omega;
+
+			if (moddedAngle >= 180) {
+				// The inside turning circle is on the left //
+				speeds.add(innerSpeed);
+				speeds.add(outerSpeed);
+			} else {
+				// The inside turning circle is on the right //
+				speeds.add(outerSpeed);
+				speeds.add(innerSpeed);
+			}
+			SmartDashboard.putNumber("Speed Left", speeds.get(0));
+			SmartDashboard.putNumber("Speed Right", speeds.get(1));
+			return speeds;
+		}
+
+		speeds.add(0.0);
+		speeds.add(0.0);
+		SmartDashboard.putNumber("Speed Left", speeds.get(0));
+		SmartDashboard.putNumber("Speed Right", speeds.get(1));
 		return speeds;
 	}
 }

@@ -10,7 +10,9 @@ package frc.robot.commands;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.*;
+import org.team3236.AssistMode;
 import frc.robot.CommandBase;
 
 public class TeleopVision extends Command {
@@ -27,7 +29,9 @@ public class TeleopVision extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		ArrayList<Double> speeds = CommandBase.visionRocket.DriveToPair(0, 1.75);
+		ArrayList<Double> speeds = CommandBase.visionRocket.DriveAlongArc(AssistMode.HATCH, 0.4);
+		SmartDashboard.putNumber("Gyro", CommandBase.drivetrain.GetAngle());
+		
 		CommandBase.drivetrain.Drive(speeds.get(0), speeds.get(1));
 	}
 
