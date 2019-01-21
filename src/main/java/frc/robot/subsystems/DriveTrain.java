@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.*;
 
 import org.team3236.DriveTrainMode;
+import org.team3236.kop.Ultrasonic;
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
@@ -33,27 +35,33 @@ public class DriveTrain extends Subsystem {
 	private WPI_TalonSRX RightTalonA = new WPI_TalonSRX(RobotMap.RIGHTTALONA);
 	private WPI_TalonSRX RightTalonB = new WPI_TalonSRX(RobotMap.RIGHTTALONB);
 
-	SerialPort Ultrasonic;
+	Ultrasonic UltrasonicSensor;
 	private static AHRS NavX = new AHRS(SPI.Port.kMXP);
 	private boolean autoLocked = false;
 
-	private DriveTrainMode DriveMode = DriveTrainMode.HATCH;
+	private DriveTrainMode driveMode = DriveTrainMode.CARGO;
 
 	public void Initialize() {
 		// Set up the ultrasonic sensor //
-		try {
-			Ultrasonic = new SerialPort(9600, SerialPort.Port.kOnboard, 8, Parity.kNone, StopBits.kOne);
-		} catch (RuntimeException ex) {
-			throw ex;
-		}
-		Ultrasonic.setTimeout(2);
-		Ultrasonic.setReadBufferSize(6);
+		UltrasonicSensor = new Ultrasonic(9600);
+
+		// Reset the Gyro to 0 degrees //
+		this.ResetGyro();
+
+		// Put the drivemode on the display //
+		this.UpdateSmartDashboard();
 	}
 
-	public double GetDistance() {
+	public void UpdateSmartDashboard() {
+		if (this.driveMode == DriveTrainMode.CARGO) {
+			SmartDashboard.putString("Drive Mode", "CARGO");
+		} else {
+			SmartDashboard.putString("Drive Mode", "HATCH");
+		}
+	}
 
-
-		return 0.0;
+	public String GetDistance() {
+		return "";
 	}
 
 	public double GetAngle() {
@@ -68,8 +76,26 @@ public class DriveTrain extends Subsystem {
 		NavX.reset();
 	}
 
+	public void SetDriveMode(DriveTrainMode newMode) {
+		this.driveMode = newMode;
+		this.UpdateSmartDashboard();
+	}
+
+	public void SwitchDriveMode() {
+		if (this.driveMode == DriveTrainMode.HATCH) {
+			this.driveMode = DriveTrainMode.CARGO;
+		} else {
+			this.driveMode = DriveTrainMode.HATCH;
+		}
+		this.UpdateSmartDashboard();
+	}
+
+	public DriveTrainMode GetDriveMode() {
+		return this.driveMode;
+	}
+
 	public void SetLeft(double speed) {
-		if (DriveMode == DriveTrainMode.HATCH) {
+		if (driveMode == DriveTrainMode.HATCH) {
 			LeftTalonA.set(speed);
 			LeftTalonB.set(speed);
 		} else {
@@ -79,7 +105,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void SetRight(double speed) {
-		if (DriveMode == DriveTrainMode.HATCH) {
+		if (driveMode == DriveTrainMode.HATCH) {
 			RightTalonA.set(-speed);
 			RightTalonB.set(-speed);
 		} else {

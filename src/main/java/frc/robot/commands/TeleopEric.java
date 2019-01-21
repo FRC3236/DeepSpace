@@ -7,18 +7,16 @@
 
 package frc.robot.commands;
 
-import java.util.ArrayList;
-
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.*;
-import org.team3236.AssistMode;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import org.team3236.DriveTrainMode;
 import frc.robot.CommandBase;
 
-public class TeleopVision extends Command {
-	public TeleopVision() {
-		requires(CommandBase.visionRocket);
-		requires(CommandBase.drivetrain);
+public class TeleopEric extends Command {
+	
+	boolean canSwitchDriveMode = true;
+	public TeleopEric() {
+	
 	}
 
 	// Called just before this Command runs the first time
@@ -30,10 +28,24 @@ public class TeleopVision extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		ArrayList<Double> speeds = CommandBase.visionRocket.DriveAlongArc(AssistMode.HATCH, 0.3);
-		SmartDashboard.putNumber("Gyro", CommandBase.drivetrain.GetAngle());
-		
-		CommandBase.drivetrain.Drive(speeds.get(0), speeds.get(1));
+		// Check to see if we should switch drive modes //
+		boolean leftStickDown = CommandBase.controls.Driver.getStickButton(Hand.kLeft);
+		boolean rightStickDown = CommandBase.controls.Driver.getStickButton(Hand.kRight);
+
+		if (leftStickDown && rightStickDown) {
+			if (canSwitchDriveMode) {
+				CommandBase.drivetrain.SwitchDriveMode();
+				canSwitchDriveMode = false;
+			}
+		} else {
+			// So that the drive mode isn't switching over and over again while both buttons are pressed //
+			canSwitchDriveMode = true;
+		}
+
+		double leftSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
+		double rightSpeed = CommandBase.controls.Driver.getY(Hand.kRight);
+
+		CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

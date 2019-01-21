@@ -34,6 +34,12 @@ public class VisionRocket extends Subsystem {
 
 	private static NetworkTableInstance ntInst = NetworkTableInstance.getDefault();
 	private static NetworkTable visionTable = ntInst.getTable("contours");
+	private boolean drivingAlongArc = false;
+	private boolean discoveredDesiredAngle = false;
+	private int desiredAngle = 0;
+	private double masterRadius = 0;
+	private double theta = 0;
+	private int normalAngle = 0;
 
 	private static enum RocketSide {
 		RIGHT, LEFT
@@ -219,54 +225,50 @@ public class VisionRocket extends Subsystem {
 		ArrayList<Double> speeds = new ArrayList<Double>();
 
 
-		double distanceToRocket = CommandBase.drivetrain.GetDistance();
+		double distanceToRocket = 72.0; // In inches
 		double gyroAngle = CommandBase.drivetrain.GetAngle();
 		int gyroAngleInt = (int)Math.round(gyroAngle);
-
-		double desiredAngle;
 
 		double width = distanceToRocket * Math.cos(gyroAngle);
 		double depth = distanceToRocket * Math.sin(gyroAngle);
 		double moddedAngle = Math.floorMod(gyroAngleInt, 360);
+		double moddedNormal;
 
 		if (mode == AssistMode.CARGOROCKET) {
 
 		} else if (mode == AssistMode.HATCH) {
-			if (moddedAngle >= 0 && moddedAngle < 90) {
-				desiredAngle = 60;
-			} else if (moddedAngle >= 90 && moddedAngle < 180) {
-				desiredAngle = 120;
-			} else if (moddedAngle >= 180 && moddedAngle < 270) {
-				desiredAngle = 240;
-			} else {
-				desiredAngle = 300;
+			
+			if (!discoveredDesiredAngle) {
+				if (moddedAngle >= 0 && moddedAngle < 90) {
+					desiredAngle = 60;
+				} else if (moddedAngle >= 90 && moddedAngle < 180) {
+					desiredAngle = 120;
+				} else if (moddedAngle >= 180 && moddedAngle < 270) {
+					desiredAngle = 240;
+				} else {
+					desiredAngle = 300;
+				}
+				if (moddedAngle <= desiredAngle) {
+					normalAngle = desiredAngle - 90;
+					theta = 90 - (moddedAngle-normalAngle);
+				} else {
+					normalAngle = desiredAngle + 90;
+					theta = 90 - (normalAngle-moddedAngle);
+				}
+				moddedNormal = Math.floorMod(normalAngle, 360);
+				discoveredDesiredAngle = true;
 			}
+			
 
 			SmartDashboard.putNumber("Desired", desiredAngle);
 			SmartDashboard.putNumber("Modded", moddedAngle);
-			// Check to see if we can free up the drive train //
-			if (Math.abs(moddedAngle - desiredAngle) < 5) {
-				CommandBase.drivetrain.UnlockAuto();
-				speeds.add(0.0);
-				speeds.add(0.0);
-				return speeds;
-			}
-
-			double normalAngle, theta; 
-			if (moddedAngle <= desiredAngle) {
-				normalAngle = desiredAngle - 90;
-				theta = 90 - (moddedAngle-normalAngle);
-			} else {
-				normalAngle = desiredAngle + 90;
-				theta = 90 - (normalAngle-moddedAngle);
-			}
-			double phi = 90 - theta;
 
 			// Check if our current angle is within 10 degrees of our normal angle
-			if (Math.abs(moddedAngle - normalAngle%360) > 10) {
+			System.out.println("Normal: " + normalAngle);
+			if (!drivingAlongArc && Math.abs(moddedAngle - normalAngle) > 5) {
 				// Tell the drivetrain to spin //
 				double turnSpeed = 0.3;
-				if (moddedAngle > desiredAngle) {
+				if (moddedAngle < normalAngle) {
 					speeds.add(turnSpeed);
 					speeds.add(-turnSpeed);
 				} else {
@@ -276,32 +278,53 @@ public class VisionRocket extends Subsystem {
 				SmartDashboard.putNumber("Speed Left", speeds.get(0));
 				SmartDashboard.putNumber("Speed Right", speeds.get(1));
 				return speeds;
-			}
-
-			// We can follow the arc now! //
-			double wheelBase = 23.0;
-			// New robot 2019 is 21.5;//
-
-			double masterRadius = (depth/2) / Math.sin(theta);
-			double innerRadius = masterRadius - wheelBase;
-			double outerRadius = masterRadius + wheelBase;
-			double omega = speed/masterRadius;
-
-			double innerSpeed = innerRadius * omega;
-			double outerSpeed = outerRadius * omega;
-
-			if (moddedAngle >= 180) {
-				// The inside turning circle is on the left //
-				speeds.add(innerSpeed);
-				speeds.add(outerSpeed);
 			} else {
-				// The inside turning circle is on the right //
-				speeds.add(outerSpeed);
-				speeds.add(innerSpeed);
+				if (!drivingAlongArc) {	
+					masterRadius = (depth/2) / Math.sin(theta);
+				}
+				drivingAlongArc = true;
+				// We can follow the arc now! //
+				double wheelBase = 23.0;
+				// New robot 2019 is 21.5;//
+				
+				double innerRadius = masterRadius - wheelBase;
+				double outerRadius = masterRadius + wheelBase;
+				double omega = speed/masterRadius;
+	
+				/*System.out.println("Ultrasonic " + CommandBase.drivetrain.GetDistance());
+				System.out.println("Depth: " + depth);
+				System.out.println("Theta: " + theta);
+				System.out.println("Master rad: " + masterRadius);
+				System.out.println("Inner rad: " + innerRadius);
+				System.out.println("Outer rad: " + outerRadius);
+				System.out.println("Omega: " + omega);*/
+
+				double innerSpeed = -(innerRadius * omega);
+				double outerSpeed = -(outerRadius * omega);
+	
+
+				if (Math.abs(gyroAngle - normalAngle) < 5) {
+					speeds.add(0.0);
+					speeds.add(0.0);
+					return speeds;
+				}
+				if (moddedAngle >= 180) {
+					// The inside turning circle is on the left //
+					speeds.add(innerSpeed);
+					speeds.add(outerSpeed);
+				} else {
+					// The inside turning circle is on the right //
+					speeds.add(outerSpeed);
+					speeds.add(innerSpeed);
+				}
+
+				System.out.println("Speeds: I(" + innerSpeed + ") O(" + outerSpeed +")");
+				SmartDashboard.putNumber("Speed Left", speeds.get(0));
+				SmartDashboard.putNumber("Speed Right", speeds.get(1));
+				return speeds;
 			}
-			SmartDashboard.putNumber("Speed Left", speeds.get(0));
-			SmartDashboard.putNumber("Speed Right", speeds.get(1));
-			return speeds;
+
+			
 		}
 
 		speeds.add(0.0);
