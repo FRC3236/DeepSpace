@@ -12,6 +12,8 @@ import frc.robot.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.CommandBase;
+import frc.robot.commands.getDistance;
+import frc.robot.subsystems.UltrasonicSensor;
 
 public class TeleopMikeSmith extends Command {
   public TeleopMikeSmith() {
@@ -51,11 +53,13 @@ public class TeleopMikeSmith extends Command {
     lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
   
 
+
     double leftSpeed = -backwardSpeed + forwardSpeed + lateralSpeed;
     double rightSpeed = backwardSpeed - forwardSpeed + lateralSpeed;
-    //if (leftSpeed > 0.05 || rightSpeed > 0.05){} Possible Deadzone
+    
+    if (leftSpeed > 0.05 || rightSpeed > 0.05){ //Possible Deadzone
     CommandBase.drivetrain.Drive(leftSpeed, rightSpeed); 
-
+    }
 
     //elevatorspeed = CommandBase.controls
   }
