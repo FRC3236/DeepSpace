@@ -57,7 +57,7 @@ public class TeleopMikeSmith extends Command {
     double leftSpeed = -backwardSpeed + forwardSpeed + lateralSpeed;
     double rightSpeed = backwardSpeed - forwardSpeed + lateralSpeed;
     
-    if (leftSpeed > 0.05 || rightSpeed > 0.05){ //Possible Deadzone
+    if (Math.abs(leftSpeed) > 0.05 || Math.abs(rightSpeed) > 0.05){ //Possible Deadzone
     CommandBase.drivetrain.Drive(leftSpeed, rightSpeed); 
     }
 
