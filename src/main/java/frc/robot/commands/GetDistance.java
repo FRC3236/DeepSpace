@@ -23,13 +23,18 @@ public class GetDistance extends Command {
   protected void initialize() {
     CommandBase.drivetrain.Initialize();
     //CommandBase.drivetrain.resetUltrasonic();
+    
   } 
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
 
-    SmartDashboard.putString("Data", CommandBase.drivetrain.getUltrasonic());
+    String data = CommandBase.drivetrain.getUltrasonic();
+    
+    
+    //data = data.replaceAll("R", "");
+    //Double doubleData = Double.parseDouble(data) /25.4; //25.4 is the conversion from MM to IN
   }
 
   // Make this return true when this Command no longer needs to run execute()
