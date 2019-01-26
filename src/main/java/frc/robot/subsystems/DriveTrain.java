@@ -38,6 +38,8 @@ public class DriveTrain extends Subsystem {
   public void Initialize() {
     try {
       UltraSonicAnalog = new AnalogInput(1);
+      UltraSonicAnalog.setOversampleBits(3);
+      UltraSonicAnalog.setAverageBits(50);
       BaselineVoltage = new AnalogInput(2);
 
       AnalogInput.setGlobalSampleRate(44400);
@@ -76,21 +78,22 @@ public class DriveTrain extends Subsystem {
 
   public void resetUltrasonic()
   {
-    UltraSonic_Sensor.reset();
   }
 
   public String getUltrasonic(){
     double PSUVoltage = BaselineVoltage.getVoltage();
     SmartDashboard.putNumber("PSU Voltage:", PSUVoltage);
 
-    BigDecimal AnalogOutputScale = new BigDecimal((PSUVoltage/1024)*200);
+    // Voltage -> Meter scale in Volt/Meters
+    //(~0.976V/M for 5.00V)
+    //BigDecimal AnalogOutputScale = new BigDecimal((PSUVoltage/1024)*200);
+    BigDecimal AnalogOutputScale = new BigDecimal("1.14045"); // Determined experimentally
     SmartDashboard.putString("Volts/Meter:", AnalogOutputScale.toString()+"V/M");
 
-    double double_volts = UltraSonicAnalog.getVoltage();
+    double double_volts = UltraSonicAnalog.getAverageVoltage();
     BigDecimal volts = BigDecimal.valueOf(double_volts);
 
     SmartDashboard.putString("Volts:", volts.toString());
-
     BigDecimal distance = (volts.multiply(AnalogOutputScale));    
     String strDistance = distance+"m"; // Shitty way to convert Double to String TODO: Make this prettier
     SmartDashboard.putString("Distance:", strDistance);
