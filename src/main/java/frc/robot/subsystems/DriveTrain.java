@@ -10,10 +10,16 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 
+import java.math.BigDecimal;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.AnalogInput;
+
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
@@ -25,6 +31,23 @@ public class DriveTrain extends Subsystem {
   private WPI_TalonSRX LeftTalonB = new WPI_TalonSRX(RobotMap.LEFTTALONB);
   private WPI_TalonSRX RightTalonA = new WPI_TalonSRX(RobotMap.RIGHTTALONA);
   private WPI_TalonSRX RightTalonB = new WPI_TalonSRX(RobotMap.RIGHTTALONB);
+  SerialPort UltraSonic_Sensor;
+  AnalogInput UltraSonicAnalog;
+  AnalogInput BaselineVoltage;
+
+  public void Initialize() {
+    try {
+      UltraSonicAnalog = new AnalogInput(1);
+      UltraSonicAnalog.setOversampleBits(3);
+      UltraSonicAnalog.setAverageBits(50);
+      BaselineVoltage = new AnalogInput(2);
+
+      AnalogInput.setGlobalSampleRate(44400);
+
+    } catch (RuntimeException ex) {
+      System.out.println("Could not start Ultrasonic");
+    }    
+}
 
   public void InvertTalons()
   {
@@ -52,6 +75,29 @@ public class DriveTrain extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
-  
-  
+
+  public void resetUltrasonic()
+  {
+  }
+
+  public String getUltrasonic(){
+    double PSUVoltage = BaselineVoltage.getVoltage();
+    SmartDashboard.putNumber("PSU Voltage:", PSUVoltage);
+
+    // Voltage -> Meter scale in Volt/Meters
+    //(~0.976V/M for 5.00V)
+    //BigDecimal AnalogOutputScale = new BigDecimal((PSUVoltage/1024)*200);
+    BigDecimal AnalogOutputScale = new BigDecimal("1.14045"); // Determined experimentally
+    SmartDashboard.putString("Volts/Meter:", AnalogOutputScale.toString()+"V/M");
+
+    double double_volts = UltraSonicAnalog.getAverageVoltage();
+    BigDecimal volts = BigDecimal.valueOf(double_volts);
+
+    SmartDashboard.putString("Volts:", volts.toString());
+    BigDecimal distance = (volts.multiply(AnalogOutputScale));    
+    String strDistance = distance+"m"; // Shitty way to convert Double to String TODO: Make this prettier
+    SmartDashboard.putString("Distance:", strDistance);
+    return strDistance;
+  } 
 }
+
