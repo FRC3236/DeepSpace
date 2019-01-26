@@ -94,7 +94,9 @@ public class DriveTrain extends Subsystem {
     BigDecimal volts = BigDecimal.valueOf(double_volts);
 
     SmartDashboard.putString("Volts:", volts.toString());
-    BigDecimal distance = (volts.multiply(AnalogOutputScale));    
+    BigDecimal full_distance = (volts.multiply(AnalogOutputScale));    
+    BigDecimal distance = full_distance.setScale(3, BigDecimal.ROUND_CEILING);
+
     String strDistance = distance+"m"; // Shitty way to convert Double to String TODO: Make this prettier
     SmartDashboard.putString("Distance:", strDistance);
     return strDistance;
