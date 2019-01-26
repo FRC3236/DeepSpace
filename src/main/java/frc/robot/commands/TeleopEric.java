@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.team3236.DriveTrainMode;
 import frc.robot.CommandBase;
 
@@ -31,6 +32,7 @@ public class TeleopEric extends Command {
 		// Check to see if we should switch drive modes //
 		boolean leftStickDown = CommandBase.controls.Driver.getStickButton(Hand.kLeft);
 		boolean rightStickDown = CommandBase.controls.Driver.getStickButton(Hand.kRight);
+		int dpad = CommandBase.controls.Driver.getPOV();
 
 		if (leftStickDown && rightStickDown) {
 			if (canSwitchDriveMode) {
@@ -42,10 +44,14 @@ public class TeleopEric extends Command {
 			canSwitchDriveMode = true;
 		}
 
+		SmartDashboard.putNumber("elevator", CommandBase.elevator.getRawEncoder());
+		SmartDashboard.putNumber("Ultrasonic", CommandBase.drivetrain.GetDistance());
+
 		double leftSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
 		double rightSpeed = CommandBase.controls.Driver.getY(Hand.kRight);
 
-		CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
+		//CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
+		CommandBase.elevator.set(leftSpeed/2);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

@@ -10,19 +10,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import com.kauailabs.navx.frc.*;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.*;
 
 import org.team3236.DriveTrainMode;
-import org.team3236.kop.Ultrasonic;
+import org.team3236.Conversion;
+import org.team3236.kop.MB1013;
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
@@ -35,15 +31,13 @@ public class DriveTrain extends Subsystem {
 	private WPI_TalonSRX RightTalonA = new WPI_TalonSRX(RobotMap.RIGHTTALONA);
 	private WPI_TalonSRX RightTalonB = new WPI_TalonSRX(RobotMap.RIGHTTALONB);
 
-	Ultrasonic UltrasonicSensor;
+	private static MB1013 ultrasonic = new MB1013(); 
 	private static AHRS NavX = new AHRS(SPI.Port.kMXP);
 	private boolean autoLocked = false;
 
 	private DriveTrainMode driveMode = DriveTrainMode.CARGO;
 
 	public void Initialize() {
-		// Set up the ultrasonic sensor //
-		UltrasonicSensor = new Ultrasonic(9600);
 
 		// Reset the Gyro to 0 degrees //
 		this.ResetGyro();
@@ -60,8 +54,8 @@ public class DriveTrain extends Subsystem {
 		}
 	}
 
-	public String GetDistance() {
-		return "";
+	public double GetDistance() {
+		return ultrasonic.getDistance();
 	}
 
 	public double GetAngle() {
@@ -117,6 +111,7 @@ public class DriveTrain extends Subsystem {
 	public void Drive(double leftSpeed, double rightSpeed){
 		SetLeft(leftSpeed);
 		SetRight(rightSpeed);
+
 	}
 
 	public void LockAuto() {
