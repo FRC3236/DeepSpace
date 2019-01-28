@@ -8,12 +8,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.CommandBase;
 import frc.robot.commands.getDistance;
-import frc.robot.subsystems.UltrasonicSensor;
+import frc.robot.subsystems.Elevator;
 
 public class TeleopMikeSmith extends Command {
   public TeleopMikeSmith() {
@@ -26,6 +27,7 @@ public class TeleopMikeSmith extends Command {
   @Override
   protected void initialize() {
 
+    CommandBase.drivetrain.Drive(0,0);
   }
 
   /*if CommandBase.controls.Driver.getAButtonPressed(true){
@@ -44,7 +46,10 @@ public class TeleopMikeSmith extends Command {
     CommandBase.drivetrain.Drive(-leftsideSpeed, rightsideSpeed);
     //elevatorspeed = CommandBase.controls
   } */
-  
+  //int getRawEncoderPos = CommandBase.elevator.getRawEncoderPos();
+
+
+
   @Override
   protected void execute() {
     double backwardSpeed, forwardSpeed, lateralSpeed; 
@@ -52,17 +57,53 @@ public class TeleopMikeSmith extends Command {
     forwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);//rightside speed = Right Xbox trigger
     lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
   
-
-
-    double leftSpeed = -backwardSpeed + forwardSpeed + lateralSpeed;
+    double leftSpeed = -backwardSpeed + forwardSpeed - lateralSpeed;
     double rightSpeed = backwardSpeed - forwardSpeed + lateralSpeed;
-    
-    if (Math.abs(leftSpeed) > 0.05 || Math.abs(rightSpeed) > 0.05){ //Possible Deadzone
-    CommandBase.drivetrain.Drive(leftSpeed, rightSpeed); 
+  
+    //if speed isnt greater than 0.125 set motors to 0
+    if (Math.abs(rightSpeed) > 0.125 || Math.abs(leftSpeed) > 0.125){ //Possible Deadzone
+    CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
     }
+    else{
 
-    //elevatorspeed = CommandBase.controls
+      CommandBase.drivetrain.Drive(0,0);
+    }
+    int getRawEncoderPos = CommandBase.elevator.getRawEncoderPos();
+
+    double elevatorspeed;
+    elevatorspeed = CommandBase.controls.Driver.getY(Hand.kRight)/1.5;
+    
+
+    if (getRawEncoderPos < 4000 && (-elevatorspeed > 0.25 )){
+
+      
+    
+  CommandBase.elevator.setMotors(elevatorspeed);
+    }
+    else if(elevatorspeed > 0.05){
+
+CommandBase.elevator.setMotors(0);
+
+    }
+  else if(getRawEncoderPos>= 4000 || getRawEncoderPos<= 0){
+
+
+CommandBase.elevator.setMotors(0);
+
   }
+
+
+//SmartDashbard Commands
+SmartDashboard.putNumber("Elevator Speed", elevatorspeed );
+SmartDashboard.putNumber("leftspeed", leftSpeed);
+SmartDashboard.putNumber("rightspeed", rightSpeed);
+SmartDashboard.putNumber("Encoder Position", getRawEncoderPos);
+
+
+  }
+
+
+  
 
 
   // Make this return true when this Command no longer needs to run execute()

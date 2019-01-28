@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.commands.TeleopMikeSmith;
 import frc.robot.RobotMap;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -22,14 +22,28 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class Elevator extends Subsystem {
   
-
-  private WPI_TalonSRX ElevatorTalonEncoder = new WPI_TalonSRX(RobotMap.ELEVATORTALONENCODER);
-  private WPI_TalonSRX ElevatorTalonNoEncoder = new WPI_TalonSRX(RobotMap.ELEVATORTALONNOENCODER);
+  private WPI_TalonSRX ElevatorTalonEncoder, ElevatorTalonNoEncoder;
 
 
+public Elevator() {
+   ElevatorTalonEncoder = new WPI_TalonSRX(RobotMap.ELEVATORTALONENCODER);
+   ElevatorTalonNoEncoder = new WPI_TalonSRX(RobotMap.ELEVATORTALONNOENCODER);
 
+  ElevatorTalonEncoder.setSelectedSensorPosition(0);
+}
+  public int getRawEncoderPos(){
+ int encPos = -ElevatorTalonEncoder.getSelectedSensorPosition();
 
+  return encPos;
 
+  
+  
+  }
+  public void setMotors(double speed){
+    ElevatorTalonNoEncoder.set(speed);
+  ElevatorTalonEncoder.set(-speed);
+
+}
 
 
   @Override
