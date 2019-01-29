@@ -57,8 +57,8 @@ public class TeleopMikeSmith extends Command {
     forwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);//rightside speed = Right Xbox trigger
     lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
   
-    double leftSpeed = -backwardSpeed + forwardSpeed - lateralSpeed;
-    double rightSpeed = backwardSpeed - forwardSpeed + lateralSpeed;
+    double leftSpeed = -backwardSpeed + forwardSpeed + (lateralSpeed/2);
+    double rightSpeed = backwardSpeed - forwardSpeed + (lateralSpeed/2);
   
     //if speed isnt greater than 0.125 set motors to 0
     if (Math.abs(rightSpeed) > 0.125 || Math.abs(leftSpeed) > 0.125){ //Possible Deadzone
