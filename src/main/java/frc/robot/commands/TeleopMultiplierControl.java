@@ -32,7 +32,6 @@ public class TeleopMultiplierControl extends Command {
   @Override
   protected void execute() {
     
-    CommandBase.drivetrain.getUltrasonic();
     boolean forward_acceleration = CommandBase.controls.Driver.getXButton();
     boolean backward_acceleration = CommandBase.controls.Driver.getAButton();
     boolean forward_stop = CommandBase.controls.Driver.getXButtonReleased();
@@ -40,14 +39,18 @@ public class TeleopMultiplierControl extends Command {
     double direction = CommandBase.controls.Driver.getX(Hand.kLeft);
     double multiplier = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
 
-    System.out.println("Hello!");
-    SmartDashboard.putNumber("Multi", multiplier);
+    // Update all SmartDashboard data
+    SmartDashboard.putNumber("Speed Multiplier:", multiplier);
     SmartDashboard.putNumber("Direction:", direction);
-    //if (direction) > 0.2:
-    System.out.print(forward_acceleration);  
+    CommandBase.drivetrain.getUltrasonic();
+
+    // Do Drivetrain stuff
     if (forward_acceleration && multiplier > 0 ){
-      SmartDashboard.putNumber("Usable direction:", direction);
+
+      // Account for controller deadzone
       if (direction > 0.25 || direction < -0.25){
+        /* Accelerate forwards in the directions specified by the left stick. Scale the left stick
+        turning speed with the speed multipler */
         CommandBase.drivetrain.Drive(multiplier, -multiplier+(multiplier*2*direction));
 
       }
@@ -55,20 +58,24 @@ public class TeleopMultiplierControl extends Command {
         CommandBase.drivetrain.Drive(multiplier, -multiplier);
       }
     }
+
     if (backward_acceleration && multiplier > 0){
+
       if (direction > 0.25 || direction < -0.25){
+        /* Accelerate backwards in the directions specified by the left stick. Scale the left stick
+        turning speed with the speed multipler */
         CommandBase.drivetrain.Drive(-multiplier+(multiplier*2*direction), multiplier);
       }
+      
       else{
         CommandBase.drivetrain.Drive(-multiplier, multiplier);
         }
       }
     
     if (forward_stop || backward_stop){
+      // Don't drive when we aren't driving :P
       CommandBase.drivetrain.Drive(0, 0);
     }
-
-    //CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
  
   }
 
