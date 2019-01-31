@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -31,29 +30,25 @@ public class TeleopTriggerControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    boolean forward_acceleration = CommandBase.controls.Driver.getXButton();
-    boolean backward_acceleration = CommandBase.controls.Driver.getAButton();
-    boolean forward_stop = CommandBase.controls.Driver.getXButtonReleased();
-    boolean backward_stop = CommandBase.controls.Driver.getAButtonReleased();
+    double lateralSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft);
+    double forwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
+  
+    // Left trigger: [0, -1], Right trigger: [0, 1] //
+    /* Condition: Right trigger down:
+        lateralSpeed = 0; forwardSpeed = 1;
+        left speed = lateral-forward  = 0 - 1 = -1
+        right speed = forward - lateral = 1 - 0 = +1
+      
+      Condition: Left trigger down:
+        lateralSpeed = -1, forwardSpeed = 0
+        left speed = lateral-forward  = 0 + -1 = -1 
+        right speed = forward-lateral = 0 - (-1) = 1
+      */
 
-    
-    if (forward_acceleration){
-      double multiplier = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
-        SmartDashboard.putNumber("Multi", multiplier);
-      CommandBase.drivetrain.Drive(multiplier, -multiplier);
-      }
+    double leftSpeed = lateralSpeed-forwardSpeed;
+    double rightSpeed = forwardSpeed-lateralSpeed;
 
-    if (backward_acceleration){
-      double multiplier = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
-      SmartDashboard.putNumber("Multi", multiplier);
-      CommandBase.drivetrain.Drive(-multiplier, multiplier);
-        }
-    
-    if (forward_stop || backward_stop){
-      CommandBase.drivetrain.Drive(0, 0);
-    }
-
-    //CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
+    CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
   }
 
   // Make this return true when this Command no longer needs to run execute()
