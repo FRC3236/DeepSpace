@@ -74,7 +74,7 @@ public class TeleopMikeSmith extends Command {
     elevatorspeed = CommandBase.controls.Driver.getY(Hand.kRight)/1.5;
     
 
-    if (getRawEncoderPos < 4000 && (-elevatorspeed > 0.25 )){
+    if (getRawEncoderPos < 4000 && (-elevatorspeed > 0.25 ) && CommandBase.controls.Driver.getAButton() != true && CommandBase.controls.Driver.getBButton() != true){
 
       
     
@@ -85,19 +85,63 @@ public class TeleopMikeSmith extends Command {
 CommandBase.elevator.setMotors(0);
 
     }
-  else if(getRawEncoderPos>= 4000 || getRawEncoderPos<= 0){
+  else if(getRawEncoderPos>= 4000 || getRawEncoderPos<= 300){
 
 
 CommandBase.elevator.setMotors(0);
 
   }
+  else if(CommandBase.controls.Driver.getAButton() == true && getRawEncoderPos <= 4000){
 
+
+if(getRawEncoderPos < 1500 ){
+CommandBase.elevator.setMotors(-0.50);
+}
+else if(CommandBase.controls.Driver.getAButton() == true){
+  CommandBase.elevator.setMotors(-0.26);
+}
+else{
+  CommandBase.elevator.setMotors(0);
+}
+  }
+
+  else if(CommandBase.controls.Driver.getBButton() == true && CommandBase.controls.Driver.getAButton() != true && getRawEncoderPos <= 4000){
+
+
+    if(getRawEncoderPos < 2800 ){
+    CommandBase.elevator.setMotors(-0.50);
+    }
+    else if(CommandBase.controls.Driver.getBButton() == true){
+      CommandBase.elevator.setMotors(-0.26);
+    }
+    else if(CommandBase.controls.Driver.getBButton() != true){
+      CommandBase.elevator.setMotors(0);
+    }
+      }
+
+/*boolean aButtonDown;
+aButtonDown = CommandBase.controls.Driver.getAButtonPressed();
+if(aButtonDown){
+  if(getRawEncoderPos< 3186);{
+  CommandBase.elevator.set;
+  if(getRawEncoderPos >= 3186){
+CommandBase.elevator.setMotors(-0.26);
+  }
+
+
+
+}
+}*/
 
 //SmartDashbard Commands
 SmartDashboard.putNumber("Elevator Speed", elevatorspeed );
 SmartDashboard.putNumber("leftspeed", leftSpeed);
 SmartDashboard.putNumber("rightspeed", rightSpeed);
+SmartDashboard.putNumber("lateralspeed", lateralSpeed);
 SmartDashboard.putNumber("Encoder Position", getRawEncoderPos);
+SmartDashboard.putBoolean("A button", CommandBase.controls.Driver.getAButton());
+SmartDashboard.putBoolean("B button", CommandBase.controls.Driver.getBButton());
+
 
 
   }

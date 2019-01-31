@@ -31,6 +31,12 @@ public Elevator() {
 
   ElevatorTalonEncoder.setSelectedSensorPosition(0);
 }
+/*public int setSelectedSensorPosition(){
+
+int setEncPos = -ElevatorTalonEncoder.setSelectedSensorPosition(setEncPos);
+return setEncPos;
+
+}*/
   public int getRawEncoderPos(){
  int encPos = -ElevatorTalonEncoder.getSelectedSensorPosition();
 
