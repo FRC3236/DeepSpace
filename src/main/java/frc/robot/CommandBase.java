@@ -6,12 +6,10 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import frc.robot.OI;
 
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.SerialPort;
-
 
 public class CommandBase {
   public static VisionRocket visionRocket = new VisionRocket();

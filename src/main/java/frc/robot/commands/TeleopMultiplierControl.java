@@ -32,6 +32,7 @@ public class TeleopMultiplierControl extends Command {
   @Override
   protected void execute() {
     
+    CommandBase.drivetrain.getUltrasonic();
     boolean forward_acceleration = CommandBase.controls.Driver.getXButton();
     boolean backward_acceleration = CommandBase.controls.Driver.getAButton();
     boolean forward_stop = CommandBase.controls.Driver.getXButtonReleased();
@@ -39,14 +40,15 @@ public class TeleopMultiplierControl extends Command {
     double direction = CommandBase.controls.Driver.getX(Hand.kLeft);
     double multiplier = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
 
+    System.out.println("Hello!");
     SmartDashboard.putNumber("Multi", multiplier);
     SmartDashboard.putNumber("Direction:", direction);
     //if (direction) > 0.2:
-      
+    System.out.print(forward_acceleration);  
     if (forward_acceleration && multiplier > 0 ){
       SmartDashboard.putNumber("Usable direction:", direction);
       if (direction > 0.25 || direction < -0.25){
-        CommandBase.drivetrain.Drive(multiplier, -multiplier+direction);
+        CommandBase.drivetrain.Drive(multiplier, -multiplier+(multiplier*2*direction));
 
       }
       else{
@@ -55,7 +57,7 @@ public class TeleopMultiplierControl extends Command {
     }
     if (backward_acceleration && multiplier > 0){
       if (direction > 0.25 || direction < -0.25){
-        CommandBase.drivetrain.Drive(-multiplier+direction, multiplier);
+        CommandBase.drivetrain.Drive(-multiplier+(multiplier*2*direction), multiplier);
       }
       else{
         CommandBase.drivetrain.Drive(-multiplier, multiplier);

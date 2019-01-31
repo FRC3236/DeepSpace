@@ -15,7 +15,6 @@ import frc.robot.commands.TeleopDefault;
 import frc.robot.commands.TeleopVision;
 import frc.robot.commands.GetDistance;
 import frc.robot.commands.TeleopMultiplierControl;
-
 import frc.robot.subsystems.ExampleSubsystem;
 
 /**
@@ -25,6 +24,7 @@ import frc.robot.subsystems.ExampleSubsystem;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
+
 public class Robot extends TimedRobot {
 
 	public enum TeleopMode {
@@ -110,8 +110,7 @@ public class Robot extends TimedRobot {
 		} else if (selectedMode == TeleopMode.MULTIPLIER) {
 			(new TeleopMultiplierControl()).start();
 		} else if (selectedMode == TeleopMode.SENSORS) {
-      (new GetDistance()).start();
-  
+			(new GetDistance()).start();
 		}
 	}
 

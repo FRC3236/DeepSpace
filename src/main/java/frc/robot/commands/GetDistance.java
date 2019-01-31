@@ -30,8 +30,8 @@ public class GetDistance extends Command {
   @Override
   protected void execute() {
 
-    String data = CommandBase.drivetrain.getUltrasonic();
-    
+    System.out.print("Hi!"); 
+    CommandBase.drivetrain.getUltrasonic();
     
     //data = data.replaceAll("R", "");
     //Double doubleData = Double.parseDouble(data) /25.4; //25.4 is the conversion from MM to IN

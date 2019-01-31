@@ -36,17 +36,7 @@ public class DriveTrain extends Subsystem {
   AnalogInput BaselineVoltage;
 
   public void Initialize() {
-    try {
-      UltraSonicAnalog = new AnalogInput(1);
-      UltraSonicAnalog.setOversampleBits(3);
-      UltraSonicAnalog.setAverageBits(50);
-      BaselineVoltage = new AnalogInput(2);
-
-      AnalogInput.setGlobalSampleRate(44400);
-
-    } catch (RuntimeException ex) {
-      System.out.println("Could not start Ultrasonic");
-    }    
+    
 }
 
   public void InvertTalons()
@@ -78,9 +68,22 @@ public class DriveTrain extends Subsystem {
 
   public void resetUltrasonic()
   {
+
   }
 
-  public String getUltrasonic(){
+  public void getUltrasonic()
+  {
+    try {
+      UltraSonicAnalog = new AnalogInput(1);
+      UltraSonicAnalog.setOversampleBits(3);
+      UltraSonicAnalog.setAverageBits(50);
+      BaselineVoltage = new AnalogInput(2);
+
+      AnalogInput.setGlobalSampleRate(44400);
+
+    } catch (RuntimeException ex) {
+      System.out.println("Could not start Ultrasonic");
+    }    
     double PSUVoltage = BaselineVoltage.getVoltage();
     SmartDashboard.putNumber("PSU Voltage:", PSUVoltage);
 
@@ -99,7 +102,6 @@ public class DriveTrain extends Subsystem {
 
     String strDistance = distance+"m"; // Shitty way to convert Double to String TODO: Make this prettier
     SmartDashboard.putString("Distance:", strDistance);
-    return strDistance;
   } 
 }
 
