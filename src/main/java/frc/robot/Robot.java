@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.TeleopMikeSmith;
 import frc.robot.commands.TeleopDefault;
 import frc.robot.commands.TeleopVision;
 import frc.robot.commands.GetDistance;
@@ -26,7 +27,6 @@ import frc.robot.subsystems.ExampleSubsystem;
  */
 
 public class Robot extends TimedRobot {
-
 	public enum TeleopMode {
 		VISION, DEFAULT, MULTIPLIER, SENSORS
 	}
