@@ -18,35 +18,27 @@ import edu.wpi.first.wpilibj.SerialPort.*;
 
 import org.team3236.DriveTrainMode;
 import org.team3236.Conversion;
-import org.team3236.kop.MB1013;
-/**
- * An example subsystem.  You can replace me with your own Subsystem.
- */
 
 public class DriveTrain extends Subsystem {
-	// Put methods for controlling this subsystem
-	// here. Call these from Commands.
 	private WPI_TalonSRX LeftTalonA = new WPI_TalonSRX(RobotMap.LEFTTALONA);
 	private WPI_TalonSRX LeftTalonB = new WPI_TalonSRX(RobotMap.LEFTTALONB);
 	private WPI_TalonSRX RightTalonA = new WPI_TalonSRX(RobotMap.RIGHTTALONA);
 	private WPI_TalonSRX RightTalonB = new WPI_TalonSRX(RobotMap.RIGHTTALONB);
 
-	private static MB1013 ultrasonic = new MB1013(); 
 	private static AHRS NavX = new AHRS(SPI.Port.kMXP);
-	private boolean autoLocked = false;
 
 	private DriveTrainMode driveMode = DriveTrainMode.CARGO;
 
-	public void Initialize() {
+	public DriveTrain() {
 
 		// Reset the Gyro to 0 degrees //
-		this.ResetGyro();
+		this.resetGyro();
 
 		// Put the drivemode on the display //
-		this.UpdateSmartDashboard();
+		this.updateSmartDashboard();
 	}
 
-	public void UpdateSmartDashboard() {
+	public void updateSmartDashboard() {
 		if (this.driveMode == DriveTrainMode.CARGO) {
 			SmartDashboard.putString("Drive Mode", "CARGO");
 		} else {
@@ -54,41 +46,37 @@ public class DriveTrain extends Subsystem {
 		}
 	}
 
-	public double GetDistance() {
-		return ultrasonic.getDistance();
-	}
-
-	public double GetAngle() {
+	public double getAngle() {
 		return NavX.getAngle();
 	}
 
-	public double GetPitch() {
+	public double getPitch() {
 		return NavX.getPitch();
 	}
 
-	public void ResetGyro() {
+	public void resetGyro() {
 		NavX.reset();
 	}
 
-	public void SetDriveMode(DriveTrainMode newMode) {
+	public void setDriveMode(DriveTrainMode newMode) {
 		this.driveMode = newMode;
-		this.UpdateSmartDashboard();
+		this.updateSmartDashboard();
 	}
 
-	public void SwitchDriveMode() {
+	public void switchDriveMode() {
 		if (this.driveMode == DriveTrainMode.HATCH) {
 			this.driveMode = DriveTrainMode.CARGO;
 		} else {
 			this.driveMode = DriveTrainMode.HATCH;
 		}
-		this.UpdateSmartDashboard();
+		this.updateSmartDashboard();
 	}
 
-	public DriveTrainMode GetDriveMode() {
+	public DriveTrainMode getDriveMode() {
 		return this.driveMode;
 	}
 
-	public void SetLeft(double speed) {
+	public void setLeft(double speed) {
 		if (driveMode == DriveTrainMode.HATCH) {
 			LeftTalonA.set(speed);
 			LeftTalonB.set(speed);
@@ -98,7 +86,7 @@ public class DriveTrain extends Subsystem {
 		}
 	}
 
-	public void SetRight(double speed) {
+	public void setRight(double speed) {
 		if (driveMode == DriveTrainMode.HATCH) {
 			RightTalonA.set(-speed);
 			RightTalonB.set(-speed);
@@ -108,29 +96,14 @@ public class DriveTrain extends Subsystem {
 		}
 	}
 
-	public void Drive(double leftSpeed, double rightSpeed){
-		SetLeft(leftSpeed);
-		SetRight(rightSpeed);
+	public void drive(double leftSpeed, double rightSpeed){
+		setLeft(leftSpeed);
+		setRight(rightSpeed);
 
-	}
-
-	public void LockAuto() {
-		autoLocked = true;
-	}
-
-	public void UnlockAuto() {
-		autoLocked = false;
-	}
-
-	public boolean IsAutoLocked() {
-		return autoLocked;
 	}
 
 	@Override
-	public void initDefaultCommand() {
-		// Set the default command for a subsystem here.
-		// setDefaultCommand(new MySpecialCommand());
-	}
+	public void initDefaultCommand() {}
 	
 	
 }

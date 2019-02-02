@@ -35,7 +35,7 @@ public class TeleopDefault extends Command {
 		
 		CommandBase.visionRocket.GetContourPairs();
 
-		CommandBase.drivetrain.Drive(lateralSpeed - forwardSpeed, lateralSpeed + forwardSpeed);
+		CommandBase.drivetrain.drive(lateralSpeed - forwardSpeed, lateralSpeed + forwardSpeed);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

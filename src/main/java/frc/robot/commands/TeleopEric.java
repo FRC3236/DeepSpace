@@ -23,7 +23,7 @@ public class TeleopEric extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		CommandBase.drivetrain.Initialize();
+		
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -36,7 +36,7 @@ public class TeleopEric extends Command {
 
 		if (leftStickDown && rightStickDown) {
 			if (canSwitchDriveMode) {
-				CommandBase.drivetrain.SwitchDriveMode();
+				CommandBase.drivetrain.switchDriveMode();
 				canSwitchDriveMode = false;
 			}
 		} else {
@@ -45,7 +45,6 @@ public class TeleopEric extends Command {
 		}
 
 		SmartDashboard.putNumber("elevator", CommandBase.elevator.getRawEncoder());
-		SmartDashboard.putNumber("Ultrasonic", CommandBase.drivetrain.GetDistance());
 
 		double leftSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
 		double rightSpeed = CommandBase.controls.Driver.getY(Hand.kRight);

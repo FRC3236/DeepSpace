@@ -12,6 +12,8 @@ public class Elevator extends Subsystem {
 	private WPI_TalonSRX talon, talonWithEncoder;
 	public Conversion conversion;
 
+	private static final double MAXHEIGHT = 4000; // In ticks!
+
 	public Elevator() {
 		talon = new WPI_TalonSRX(RobotMap.ELEVATORTALON);
 		talonWithEncoder = new WPI_TalonSRX(RobotMap.ELEVATORTALONENC);
@@ -25,18 +27,10 @@ public class Elevator extends Subsystem {
 		talonWithEncoder.setSelectedSensorPosition(0);
 	}
 
-	/**
-	 * Gets the encoder value in ticks
-	 * @return Distance of the encoder in ticks
-	 */
 	public int getRawEncoder() {
 		return -talonWithEncoder.getSelectedSensorPosition();
 	}
 
-	/**
-	 * Gets the encoder value in inches
-	 * @return Distance of the encoder in inches
-	 */
 	public double getEncoder() {
 		return conversion.getInches(getRawEncoder());
 	}
@@ -47,8 +41,20 @@ public class Elevator extends Subsystem {
 	}
 
 	public void descend(double speed) {
-		talon.set(-speed);
-		talonWithEncoder.set(speed);
+		// If the encoder is reading less than an inch from the bottom
+		if (getEncoder() < 1) {
+			talon.set(0);
+			talonWithEncoder.set(0);
+		} else {
+			talon.set(-speed);
+			talonWithEncoder.set(speed);
+		}
+	}
+
+	public void goTo(double rawPosition, double rawSpeed) {
+		// Set the position to the top if its higher than the maxheight
+		double destination = Math.min(rawPosition, MAXHEIGHT);
+		double current = getRawEncoder();
 	}
 
 	public void set(double speed) {

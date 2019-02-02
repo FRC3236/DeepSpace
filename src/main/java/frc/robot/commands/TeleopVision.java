@@ -24,16 +24,16 @@ public class TeleopVision extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		CommandBase.drivetrain.Initialize();
+		
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
 		ArrayList<Double> speeds = CommandBase.visionRocket.DriveAlongArc(AssistMode.HATCH, 0.3);
-		SmartDashboard.putNumber("Gyro", CommandBase.drivetrain.GetAngle());
+		SmartDashboard.putNumber("Gyro", CommandBase.drivetrain.getAngle());
 		
-		CommandBase.drivetrain.Drive(speeds.get(0), speeds.get(1));
+		CommandBase.drivetrain.drive(speeds.get(0), speeds.get(1));
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
