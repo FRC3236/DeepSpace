@@ -12,46 +12,54 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.CommandBase;
 
 public class TeleopDefault extends Command {
-	public TeleopDefault() {
-		// Use requires() here to declare subsystem dependencies
-		// eg. requires(chassis);
-		// Delete me
-	}
+  public TeleopDefault() {
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
+    // Delete me
+  }
 
-	// Called just before this Command runs the first time
-	@Override
-	protected void initialize() {
+  // Called just before this Command runs the first time
+  @Override
+  protected void initialize() {
 
-	}
+  }
 
-	// Called repeatedly when this Command is scheduled to run
-	@Override
-	protected void execute() {
-		double forwardSpeed, lateralSpeed; 
-		forwardSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
-		lateralSpeed = CommandBase.controls.Driver.getX(Hand.kRight);
-		
-		CommandBase.visionRocket.GetContourPairs();
+  // Called repeatedly when this Command is scheduled to run
+ /* @Override
+  protected void execute() {
+    double leftsideSpeed, rightsideSpeed; 
+    leftsideSpeed = CommandBase.controls.Driver.getY(Hand.kLeft); //leftspeed = Left Xbox Stick Y axis
+    rightsideSpeed = CommandBase.controls.Driver.getY(Hand.kRight);//rightside speed = Right Xbox Stick Y axis
+    CommandBase.drivetrain.Drive(-leftsideSpeed, rightsideSpeed);
+    //elevatorspeed = CommandBase.controls
+  }*/
+  @Override
+  protected void execute() {
+    double backwardSpeed, forwardSpeed, lateralSpeed, sensitivityMultiplier; 
+    backwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft); //leftspeed = Left Xbox Trigger axis
+    forwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);//rightside speed = Right Xbox trigger
+    lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
+    sensitivityMultiplier = CommandBase.controls.Driver.getY(Hand.kRight); //Sensitivity multiplier of lateral speed from Right Xbox Stick Y Axis
 
-		CommandBase.drivetrain.Drive(lateralSpeed - forwardSpeed, lateralSpeed + forwardSpeed);
-	}
+    CommandBase.drivetrain.Drive((backwardSpeed * -1) + forwardSpeed + (lateralSpeed / Math.abs(sensitivityMultiplier / 5) ), (backwardSpeed) + (lateralSpeed / Math.abs(sensitivityMultiplier / 5)) + (forwardSpeed * -1));
+  }
+  // Make this return true when this Command no longer needs to run execute()
+  @Override
+  protected boolean isFinished() {
+    return false;
+  }
 
-	// Make this return true when this Command no longer needs to run execute()
-	@Override
-	protected boolean isFinished() {
-		return false;
-	}
+  // Called once after isFinished returns true
+  @Override
+  protected void end() {
+  }
 
-	// Called once after isFinished returns true
-	@Override
-	protected void end() {
-	}
-
-	// Called when another command which requires one or more of the same
-	// subsystems is scheduled to run
-	@Override
-	protected void interrupted() {
-	}
+  // Called when another command which requires one or more of the same
+  // subsystems is scheduled to run
+  @Override
+  protected void interrupted() {
+  }
 }
