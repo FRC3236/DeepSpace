@@ -9,12 +9,15 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
-import frc.robot.commands.TeleopMikeSmith;
+
+import java.math.BigDecimal;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
@@ -26,6 +29,10 @@ public class DriveTrain extends Subsystem {
   private WPI_TalonSRX LeftTalonB = new WPI_TalonSRX(RobotMap.LEFTTALONB);
   private WPI_TalonSRX RightTalonA = new WPI_TalonSRX(RobotMap.RIGHTTALONA);
   private WPI_TalonSRX RightTalonB = new WPI_TalonSRX(RobotMap.RIGHTTALONB);
+
+  public void Initialize() {
+    
+}
 
   public void InvertTalons()
   {
@@ -53,6 +60,5 @@ public class DriveTrain extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
-  
-  
 }
+
