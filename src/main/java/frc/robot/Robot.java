@@ -67,6 +67,7 @@ public class Robot extends TimedRobot {
 		teleopChooser.setDefaultOption("Default Teleop", TeleopMode.DEFAULT);
 		teleopChooser.addOption("Teleop Mutliplier Control", TeleopMode.MULTIPLIER);
 		teleopChooser.addOption("Sensors Auto", TeleopMode.SENSORS);
+		teleopChooser.addOption("Vision", TeleopMode.VISION);
 
 		// Add the chooser to the Shuffleboard //
 		SmartDashboard.putData("Teleop Mode", teleopChooser);

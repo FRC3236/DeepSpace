@@ -7,48 +7,34 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.CommandBase;
-import frc.robot.Robot;
-import frc.robot.RobotMap;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import frc.robot.CommandBase;
 
-public class TeleopTriggerControl extends Command {
-  public TeleopTriggerControl() {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
-    // Delete me
-  }
+
+
+public class GetDistance extends Command {
+  public GetDistance() {}
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-
-  }
+    CommandBase.drivetrain.Initialize();
+    //CommandBase.drivetrain.resetUltrasonic();
+    
+  } 
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double lateralSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft);
-    double forwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
-  
-    // Left trigger: [0, -1], Right trigger: [0, 1] //
-    /* Condition: Right trigger down:
-        lateralSpeed = 0; forwardSpeed = 1;
-        left speed = lateral-forward  = 0 - 1 = -1
-        right speed = forward - lateral = 1 - 0 = +1
-      
-      Condition: Left trigger down:
-        lateralSpeed = -1, forwardSpeed = 0
-        left speed = lateral-forward  = 0 + -1 = -1 
-        right speed = forward-lateral = 0 - (-1) = 1
-      */
 
-    double leftSpeed = lateralSpeed-forwardSpeed;
-    double rightSpeed = forwardSpeed-lateralSpeed;
-
-    CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
+    System.out.print("Hi!"); 
+    CommandBase.ultrasonic.getUltrasonic();
+    
+    //data = data.replaceAll("R", "");
+    //Double doubleData = Double.parseDouble(data) /25.4; //25.4 is the conversion from MM to IN
   }
 
   // Make this return true when this Command no longer needs to run execute()

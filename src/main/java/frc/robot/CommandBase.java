@@ -15,5 +15,6 @@ public class CommandBase {
   public static VisionRocket visionRocket = new VisionRocket();
   public static OI controls = new OI(); 
   public static DriveTrain drivetrain = new DriveTrain();
+  public static UltraSonicSensor ultrasonic = new UltraSonicSensor();  
 }
 

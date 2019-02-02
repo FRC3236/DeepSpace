@@ -32,17 +32,24 @@ public class TeleopMultiplierControl extends Command {
   @Override
   protected void execute() {
     
+    // multiplier allows operator to control speed
+    double multiplier = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
+
+    // Set speed to (+/-multiplier) when these buttons are pressed
     boolean forward_acceleration = CommandBase.controls.Driver.getXButton();
     boolean backward_acceleration = CommandBase.controls.Driver.getAButton();
+    
+    // Stop driving when A/X are released
     boolean forward_stop = CommandBase.controls.Driver.getXButtonReleased();
     boolean backward_stop = CommandBase.controls.Driver.getAButtonReleased();
+
+    // controls stearing
     double direction = CommandBase.controls.Driver.getX(Hand.kLeft);
-    double multiplier = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
 
     // Update all SmartDashboard data
     SmartDashboard.putNumber("Speed Multiplier:", multiplier);
     SmartDashboard.putNumber("Direction:", direction);
-    CommandBase.drivetrain.getUltrasonic();
+    String distance = CommandBase.ultrasonic.getUltrasonic();
 
     // Do Drivetrain stuff
     if (forward_acceleration && multiplier > 0 ){
@@ -55,6 +62,9 @@ public class TeleopMultiplierControl extends Command {
 
       }
       else{
+        
+        /* Accelerate backwards in the directions specified by the left stick. Scale the left stick
+        turning speed with the speed multipler */
         CommandBase.drivetrain.Drive(multiplier, -multiplier);
       }
     }
@@ -73,7 +83,7 @@ public class TeleopMultiplierControl extends Command {
       }
     
     if (forward_stop || backward_stop){
-      // Don't drive when we aren't driving :P
+      // Don't drive when we aren't driving  :P
       CommandBase.drivetrain.Drive(0, 0);
     }
  
