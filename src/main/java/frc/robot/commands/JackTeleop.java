@@ -31,10 +31,11 @@ public class JackTeleop extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double forwardSpeed, lateralSpeed; 
-    int one = 1;
+    double forwardSpeed,lateralSpeed,triggerLeft,triggerRight;
     forwardSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
     lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft);
+    triggerLeft = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft);
+    triggerRight = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
     //Sets the driving controls to the left joystick
     if(Math.abs(lateralSpeed) <= 0.2){
       lateralSpeed = 0;
@@ -43,10 +44,17 @@ public class JackTeleop extends Command {
       forwardSpeed = 0;
     //Set deadzones to prevent unwanted jerks
     }
-    CommandBase.drivetrain.Drive(lateralSpeed - forwardSpeed, lateralSpeed + forwardSpeed);
+    double triggerRight2 = (triggerRight * -1);
+    double trigHybrid = (triggerRight2 + triggerLeft);
+    CommandBase.drivetrain.Drive((lateralSpeed)-trigHybrid,(lateralSpeed)+trigHybrid);
+    //Implements trigger control
     SmartDashboard.putNumber("Forward Speed", forwardSpeed);
     SmartDashboard.putNumber("Lateral Speed", lateralSpeed);
-    //Displays X and Y axis Values in the Smart Dashboard
+    SmartDashboard.putNumber("Lateral Speed", lateralSpeed);
+    SmartDashboard.putNumber("Left Trigger", triggerLeft);
+    SmartDashboard.putNumber("Right Trigger", triggerRight * -1);
+    SmartDashboard.putNumber("Triggers combined", trigHybrid);
+    //Displays values in the Smart Dashboard
   }
 
   // Make this return true when this Command no longer needs to run execute()
