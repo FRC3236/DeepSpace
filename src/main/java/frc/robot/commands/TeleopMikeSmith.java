@@ -30,39 +30,6 @@ public class TeleopMikeSmith extends Command {
     CommandBase.drivetrain.Drive(0,0);
   }
 
-
-
-
-
-
-
-
-
-
-
-public void Drivecontrols(){
-  double backwardSpeed, forwardSpeed, lateralSpeed; 
-  backwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft); //leftspeed = Left Xbox Trigger axis
-  forwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);//rightside speed = Right Xbox trigger
-  lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
-
-  double leftSpeed = -backwardSpeed + forwardSpeed + (lateralSpeed/1.75);
-  double rightSpeed = backwardSpeed - forwardSpeed + (lateralSpeed/1.75);
-
-  //if speed isnt greater than 0.125 set motors to 0
-  if (Math.abs(rightSpeed) > 0.125 || Math.abs(leftSpeed) > 0.125){ //Deadzone
-  CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
-  }
-  else{
-
-    CommandBase.drivetrain.Drive(0,0);
-  }
-  SmartDashboard.putNumber("leftspeed", leftSpeed);
-  SmartDashboard.putNumber("rightspeed", rightSpeed);
-  SmartDashboard.putNumber("lateralspeed", lateralSpeed);
-  
-
-}
   /*if CommandBase.controls.Driver.getAButtonPressed(true){
     static int controltype = !controltype;
 
@@ -80,80 +47,101 @@ public void Drivecontrols(){
     //elevatorspeed = CommandBase.controls
   } */
   //int getRawEncoderPos = CommandBase.elevator.getRawEncoderPos();
-public void Elevatorcontrols(){
-  int getRawEncoderPos = CommandBase.elevator.getRawEncoderPos();
-
-  double elevatorspeed;
-  elevatorspeed = CommandBase.controls.Driver.getY(Hand.kRight)/1.5;
-  
-
-  if (getRawEncoderPos < 4000 && (-elevatorspeed > 0.25 ) && CommandBase.controls.Driver.getAButton() != true && CommandBase.controls.Driver.getBButton() != true){
-
-CommandBase.elevator.setMotors(elevatorspeed);
-  }
-  else if(elevatorspeed > 0.05){
-
-CommandBase.elevator.setMotors(0);
-
-  }
-if(getRawEncoderPos>= 4000 || getRawEncoderPos<= 0){
-
-
-CommandBase.elevator.setMotors(0);
-
-}
-if(CommandBase.controls.Driver.getAButton() == true && getRawEncoderPos <= 4000){
-
-
-if(getRawEncoderPos < 1500 ){
-CommandBase.elevator.setMotors(-0.50);
-if(CommandBase.controls.Driver.getBButton() != true){
-CommandBase.elevator.setMotors(0);
-}}}
-else if(CommandBase.controls.Driver.getAButton() == true){
-CommandBase.elevator.setMotors(-0.26);
-if(CommandBase.controls.Driver.getBButton() != true){
-  CommandBase.elevator.setMotors(0);
-  
-}
-else{
-CommandBase.elevator.setMotors(0);
-}
-}
-
-if(CommandBase.controls.Driver.getBButton() == true && CommandBase.controls.Driver.getAButton() != true && getRawEncoderPos <= 4000){
-
-
-  if (getRawEncoderPos < 2800 ){
-  CommandBase.elevator.setMotors(-0.50);
-  if(CommandBase.controls.Driver.getBButton() != true){
-    CommandBase.elevator.setMotors(0);
-    
-  }}}
-  else if(CommandBase.controls.Driver.getBButton() == true){
-    CommandBase.elevator.setMotors(-0.26);
-    if(CommandBase.controls.Driver.getBButton() != true){
-      CommandBase.elevator.setMotors(0);
-      
-  }
-  else{
-    CommandBase.elevator.setMotors(0);
-  }
-}
-SmartDashboard.putNumber("Encoder Position", getRawEncoderPos);
-SmartDashboard.putBoolean("A button", CommandBase.controls.Driver.getAButton());
-SmartDashboard.putBoolean("B button", CommandBase.controls.Driver.getBButton());
-SmartDashboard.putNumber("Elevator Speed", elevatorspeed );
-}
 
 
 
   @Override
   protected void execute() {
-Drivecontrols();
-Elevatorcontrols();
+    double backwardSpeed, forwardSpeed, lateralSpeed; 
+    backwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft); //leftspeed = Left Xbox Trigger axis
+    forwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);//rightside speed = Right Xbox trigger
+    lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
+  
+    double leftSpeed = -backwardSpeed + forwardSpeed + (lateralSpeed/2);
+    double rightSpeed = backwardSpeed - forwardSpeed + (lateralSpeed/2);
+  
+    //if speed isnt greater than 0.125 set motors to 0
+    if (Math.abs(rightSpeed) > 0.125 || Math.abs(leftSpeed) > 0.125){ //Possible Deadzone
+    CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
+    }
+    else{
 
+      CommandBase.drivetrain.Drive(0,0);
+    }
+    int getRawEncoderPos = CommandBase.elevator.getRawEncoderPos();
+
+    double elevatorspeed;
+    elevatorspeed = CommandBase.controls.Driver.getY(Hand.kRight)/1.5;
     
+
+    if (getRawEncoderPos < 4000 && (-elevatorspeed > 0.25 ) && CommandBase.controls.Driver.getAButton() != true && CommandBase.controls.Driver.getBButton() != true){
+
+      
+    
+  CommandBase.elevator.setMotors(elevatorspeed);
+    }
+    else if(elevatorspeed > 0.05){
+
+CommandBase.elevator.setMotors(0);
+
+    }
+  else if(getRawEncoderPos>= 4000 || getRawEncoderPos<= 300){
+
+
+CommandBase.elevator.setMotors(0);
+
+  }
+  else if(CommandBase.controls.Driver.getAButton() == true && getRawEncoderPos <= 4000){
+
+
+if(getRawEncoderPos < 1500 ){
+CommandBase.elevator.setMotors(-0.50);
+}
+else if(CommandBase.controls.Driver.getAButton() == true){
+  CommandBase.elevator.setMotors(-0.26);
+}
+else{
+  CommandBase.elevator.setMotors(0);
+}
+  }
+
+  else if(CommandBase.controls.Driver.getBButton() == true && CommandBase.controls.Driver.getAButton() != true && getRawEncoderPos <= 4000){
+
+
+    if(getRawEncoderPos < 2800 ){
+    CommandBase.elevator.setMotors(-0.50);
+    }
+    else if(CommandBase.controls.Driver.getBButton() == true){
+      CommandBase.elevator.setMotors(-0.26);
+    }
+    else if(CommandBase.controls.Driver.getBButton() != true){
+      CommandBase.elevator.setMotors(0);
+    }
+      }
+
+/*boolean aButtonDown;
+aButtonDown = CommandBase.controls.Driver.getAButtonPressed();
+if(aButtonDown){
+  if(getRawEncoderPos< 3186);{
+  CommandBase.elevator.set;
+  if(getRawEncoderPos >= 3186){
+CommandBase.elevator.setMotors(-0.26);
+  }
+
+
+
+}
+}*/
+
+//SmartDashbard Commands
+SmartDashboard.putNumber("Elevator Speed", elevatorspeed );
+SmartDashboard.putNumber("leftspeed", leftSpeed);
+SmartDashboard.putNumber("rightspeed", rightSpeed);
+SmartDashboard.putNumber("lateralspeed", lateralSpeed);
+SmartDashboard.putNumber("Encoder Position", getRawEncoderPos);
+SmartDashboard.putBoolean("A button", CommandBase.controls.Driver.getAButton());
+SmartDashboard.putBoolean("B button", CommandBase.controls.Driver.getBButton());
+
 
 
   }
