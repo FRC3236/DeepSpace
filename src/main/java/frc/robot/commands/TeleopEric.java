@@ -51,8 +51,18 @@ public class TeleopEric extends Command {
 		double rightSpeed = CommandBase.controls.Driver.getY(Hand.kRight);
 
 		// Lookie here
-		System.out.print(CommandBase.controls.Driver.getPOV());
-		
+		if(CommandBase.controls.Driver.getYButton()){
+			// Increment Elevator level here
+			System.out.println("Going up..");
+		}
+		else if(CommandBase.controls.Driver.getBButton()){
+			// Decrement Elevator level here
+			System.out.println("Going down...");
+		}
+		else if(CommandBase.controls.Driver.getAButton()){
+			// Actually move the elevator here
+			System.out.println("Doing stuff!");
+		}
 		
 		if (CommandBase.controls.Driver.getAButton()) {
 			System.out.println("???");
