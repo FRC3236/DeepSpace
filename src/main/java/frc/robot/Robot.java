@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
 		else{
 			new TeleopVision().start();
 		} */
-		new TeleopVision().start();
+		new TeleopEric().start();
 	}
 
 	/**

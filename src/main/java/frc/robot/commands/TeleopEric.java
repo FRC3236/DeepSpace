@@ -46,11 +46,35 @@ public class TeleopEric extends Command {
 
 		SmartDashboard.putNumber("elevator", CommandBase.elevator.getRawEncoder());
 
-		double leftSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
+		//double leftSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
+		double leftSpeed = 0;
 		double rightSpeed = CommandBase.controls.Driver.getY(Hand.kRight);
 
-		//CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
-		CommandBase.elevator.set(leftSpeed/2);
+		// Lookie here
+		System.out.print(CommandBase.controls.Driver.getPOV());
+		
+		
+		if (CommandBase.controls.Driver.getAButton()) {
+			System.out.println("???");
+			CommandBase.elevator.goTo(1500, 1);
+		}
+		
+		/* and elif is neccecary here, because we believe that
+		flawed logic exists in the XboxController class which
+		fails to make GetAButton() false when B button is
+		pressed */
+
+		else if (CommandBase.controls.Driver.getBButton()) {
+			CommandBase.elevator.goTo(3000, 1);
+		}
+
+		else {
+			// For safety reasons, we
+			// set the elevator motor to -0.
+			CommandBase.elevator.set(-leftSpeed); 
+		}
+
+		
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
