@@ -49,8 +49,11 @@ public class TeleopEric extends Command {
 		double leftSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
 		double rightSpeed = CommandBase.controls.Driver.getY(Hand.kRight);
 
-		//CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
-		CommandBase.elevator.set(leftSpeed/2);
+		if (CommandBase.controls.Driver.getAButton()) {
+			CommandBase.elevator.goTo(1500, 1);
+		} else {
+			CommandBase.elevator.set(-leftSpeed);
+		}
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

@@ -226,7 +226,7 @@ public class VisionRocket extends Subsystem {
 
 
 		double distanceToRocket = 72.0; // In inches
-		double gyroAngle = CommandBase.drivetrain.GetAngle();
+		double gyroAngle = CommandBase.drivetrain.getAngle();
 		int gyroAngleInt = (int)Math.round(gyroAngle);
 
 		double width = distanceToRocket * Math.cos(gyroAngle);

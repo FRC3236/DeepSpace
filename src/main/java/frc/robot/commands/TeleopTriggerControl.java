@@ -39,18 +39,18 @@ public class TeleopTriggerControl extends Command {
 
     if(!forward_stop){
       if (forward_acceleration){
-          CommandBase.drivetrain.Drive(multiplier, -multiplier);
+          CommandBase.drivetrain.drive(multiplier, -multiplier);
         }
       }
 
     if(!backward_stop){
       if (backward_acceleration){
-        CommandBase.drivetrain.Drive(-multiplier, multiplier);
+        CommandBase.drivetrain.drive(-multiplier, multiplier);
           }
       }
     
     if (forward_stop || backward_stop){
-      CommandBase.drivetrain.Drive(0, 0);
+      CommandBase.drivetrain.drive(0, 0);
     }
 
     //CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
