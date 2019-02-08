@@ -103,7 +103,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		// Get what the teleop chooser says //
-		TeleopMode selectedMode = teleopChooser.getSelected();
+		/*TeleopMode selectedMode = teleopChooser.getSelected();
 		if (selectedMode == TeleopMode.DEFAULT) {
 			(new TeleopDefault()).start();
 		} else if (selectedMode == TeleopMode.ERIC) {
@@ -111,6 +111,10 @@ public class Robot extends TimedRobot {
 		} else if (selectedMode == TeleopMode.VISION) {
 			(new TeleopVision()).start();
 		}
+		else{
+			new TeleopVision().start();
+		} */
+		new TeleopVision().start();
 	}
 
 	/**
