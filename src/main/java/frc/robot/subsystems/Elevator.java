@@ -23,7 +23,8 @@ public class Elevator extends Subsystem {
 		talonWithEncoder = new WPI_TalonSRX(RobotMap.ELEVATORTALONENC);
 
 		talonWithEncoder.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-
+		
+		zeroEncoder();
 		conversion = new Conversion(82.75, Conversion.Units.IN); // Change the 40 later //
 	}
 
@@ -67,7 +68,7 @@ public class Elevator extends Subsystem {
 	// Gastons equation //
 	public double gaston(double destination, double rawSpeed) {
 		int encoder = getRawEncoder();
-		
+		destination = Math.min(destination, MAXHEIGHT);
 		double holdVal = HOLDINGCONSTANT;
 		if (encoder > destination) {
 			holdVal -= .1;
@@ -87,6 +88,7 @@ public class Elevator extends Subsystem {
 
 		double encoder = getRawEncoder() - offset;
 		destination = destination - offset;
+		destination = Math.min(destination, MAXHEIGHT);
 
 		double holdVal = HOLDINGCONSTANT;
 		// Add more going down to increase accuracy
@@ -107,6 +109,8 @@ public class Elevator extends Subsystem {
 	public void goTo(double destination, double rawSpeed) {
 		// Set the position to the top if its higher than the maxheight
 		destination = Math.min(destination, MAXHEIGHT);
+
+		System.out.println(destination);
 		double speed = gaston(destination, rawSpeed);
 
 		SmartDashboard.putNumber("Elevator Speed", speed);

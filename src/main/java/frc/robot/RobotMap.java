@@ -28,6 +28,12 @@ public class RobotMap {
 
   public static int ELEVATORTALON = 4;
   public static int ELEVATORTALONENC = 5;
+  public static int ELEVATORLEVELONE = 500;
+  public static int ELEVATORLEVELTWO = 1200;
+  public static int ELEVATORLEVELTHREE = 3000;
+
+
+
 
 
   // If you are using multiple modules, make sure to define both the port
