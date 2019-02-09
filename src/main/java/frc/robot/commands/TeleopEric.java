@@ -14,10 +14,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.team3236.DriveTrainMode;
 import frc.robot.CommandBase;
 import frc.robot.RobotMap;
+import frc.robot.subsystems.*;
+
 
 public class TeleopEric extends Command {
 	
-	int desiredElevatorLevel = 0;
+	int desiredElevatorLevelCargo = 0;
+	int desiredElevatorLevelHatch = 0;
+
 	boolean canSwitchDriveMode = true;
 	public TeleopEric() {
 	
@@ -35,7 +39,10 @@ public class TeleopEric extends Command {
 		// Check to see if we should switch drive modes //
 		boolean leftStickDown = CommandBase.controls.Driver.getStickButton(Hand.kLeft);
 		boolean rightStickDown = CommandBase.controls.Driver.getStickButton(Hand.kRight);
-		int dpad = CommandBase.controls.Driver.getPOV();
+		if (CommandBase.controls.Driver.getBumperPressed(Hand.kLeft))
+		{
+			CommandBase.drivetrain.switchDriveMode();
+		}
 
 		if (leftStickDown && rightStickDown) {
 			if (canSwitchDriveMode) {
@@ -56,95 +63,168 @@ public class TeleopEric extends Command {
 		CommandBase.elevator.set(rightSpeed);
 
 
-		switch(desiredElevatorLevel){
-			default:
-			case 0:
-				SmartDashboard.putBoolean("Level 1", false);
-				SmartDashboard.putBoolean("Level 2", false);
-				SmartDashboard.putBoolean("Level 3", false);
+		if(CommandBase.drivetrain.getDriveMode() == DriveTrainMode.CARGO){
+			switch(desiredElevatorLevelCargo){
+				default:
+				case 0:
+					SmartDashboard.putBoolean("Level 1", false);
+					SmartDashboard.putBoolean("Level 2", false);
+					SmartDashboard.putBoolean("Level 3", false);
+					SmartDashboard.putBoolean("Level 4", false);
 
-				break;
-			case 1:
 
-				SmartDashboard.putBoolean("Level 1", true);
-				SmartDashboard.putBoolean("Level 2", false);
-				SmartDashboard.putBoolean("Level 3", false);				
-				break;
+					break;
+				case 1:
 
-			case 2:
-				SmartDashboard.putBoolean("Level 1", false);
-				SmartDashboard.putBoolean("Level 2", true);
-				SmartDashboard.putBoolean("Level 3", false);	
-				break;
+					SmartDashboard.putBoolean("Level 1", true);
+					SmartDashboard.putBoolean("Level 2", false);
+					SmartDashboard.putBoolean("Level 3", false);
+					SmartDashboard.putBoolean("Level 4", false);
+				
+					break;
 
-			case 3:
-				SmartDashboard.putBoolean("Level 1", false);
-				SmartDashboard.putBoolean("Level 2", false);
-				SmartDashboard.putBoolean("Level 3", true);				
-				break;
+				case 2:
+					SmartDashboard.putBoolean("Level 1", false);
+					SmartDashboard.putBoolean("Level 2", true);
+					SmartDashboard.putBoolean("Level 3", false);
+					SmartDashboard.putBoolean("Level 4", false);
+	
+					break;
+
+				case 3:
+					SmartDashboard.putBoolean("Level 1", false);
+					SmartDashboard.putBoolean("Level 2", false);
+					SmartDashboard.putBoolean("Level 3", true);	
+					SmartDashboard.putBoolean("Level 4", false);			
+					break;
+				case 4:
+					SmartDashboard.putBoolean("Level 1", false);
+					SmartDashboard.putBoolean("Level 2", false);
+					SmartDashboard.putBoolean("Level 3", false);	
+					SmartDashboard.putBoolean("Level 4", true);			
+					break;
+			}
+			if(CommandBase.controls.Driver.getYButtonPressed()){
+				// Increment Elevator level here
+				if(desiredElevatorLevelCargo < 4){
+					desiredElevatorLevelCargo++;
+					}
+			}
+			else if(CommandBase.controls.Driver.getBButtonPressed()){
+					// Decrement Elevator level here
+				if (desiredElevatorLevelCargo >= 1){
+					desiredElevatorLevelCargo--;
+				}
+			}
+		
+
+		
+
+			else if(CommandBase.controls.Driver.getAButton()){
+				// Actually move the elevator 
+				System.out.println(desiredElevatorLevelCargo);
+
+				switch(desiredElevatorLevelCargo){
+					default:
+						break;
+
+					case 1:
+						CommandBase.elevator.goTo(RobotMap.CARGOLEVELONE, 0.8);
+						break;
+
+					case 2:
+						CommandBase.elevator.goTo(RobotMap.CARGOLEVELTWO, 0.8);
+						break;
+
+					case 3:
+						CommandBase.elevator.goTo(RobotMap.CARGOLEVELTHREE, 0.8);
+						break;
+					case 4:
+						CommandBase.elevator.goTo(RobotMap.CARGOLEVELSHIP, 0.8);
+						break;
+				}
+			}
 		}
+		else if(CommandBase.drivetrain.getDriveMode() == DriveTrainMode.HATCH){
+			switch(desiredElevatorLevelHatch){
+				default:
+				case 0:
+					SmartDashboard.putBoolean("Level 1", false);
+					SmartDashboard.putBoolean("Level 2", false);
+					SmartDashboard.putBoolean("Level 3", false);
 
-		SmartDashboard.putNumber("Elevator Level", desiredElevatorLevel);
+
+					break;
+				case 1:
+
+					SmartDashboard.putBoolean("Level 1", true);
+					SmartDashboard.putBoolean("Level 2", false);
+					SmartDashboard.putBoolean("Level 3", false);
+				
+					break;
+
+				case 2:
+					SmartDashboard.putBoolean("Level 1", false);
+					SmartDashboard.putBoolean("Level 2", true);
+					SmartDashboard.putBoolean("Level 3", false);
+
+					break;
+
+				case 3:
+					SmartDashboard.putBoolean("Level 1", false);
+					SmartDashboard.putBoolean("Level 2", false);
+					SmartDashboard.putBoolean("Level 3", true);	
+					break;
+				case 4:
+					SmartDashboard.putBoolean("Level 1", false);
+					SmartDashboard.putBoolean("Level 2", false);
+					SmartDashboard.putBoolean("Level 3", false);	
+				break;
+			}
+		
 
 		if(CommandBase.controls.Driver.getYButtonPressed()){
 			// Increment Elevator level here
-			if(desiredElevatorLevel < 3){
-				desiredElevatorLevel++;
-			}
+				if(desiredElevatorLevelHatch < 3){
+					desiredElevatorLevelHatch++;
+				}
 		}
 		else if(CommandBase.controls.Driver.getBButtonPressed()){
 			// Decrement Elevator level here
-			if (desiredElevatorLevel >= 1){
-				desiredElevatorLevel--;
+			if (desiredElevatorLevelHatch >= 1){
+				desiredElevatorLevelHatch--;
 			}
 		}
 		
 
 		else if(CommandBase.controls.Driver.getAButton()){
 			// Actually move the elevator 
-			System.out.println(desiredElevatorLevel);
+			System.out.println(desiredElevatorLevelHatch);
 
-			switch(desiredElevatorLevel){
+			switch(desiredElevatorLevelHatch){
 				default:
 					break;
 
 				case 1:
-					CommandBase.elevator.goTo(RobotMap.ELEVATORLEVELONE, 0.8);
+					CommandBase.elevator.goTo(RobotMap.HATCHLEVELONE, 0.8);
 					break;
 
 				case 2:
-					CommandBase.elevator.goTo(RobotMap.ELEVATORLEVELTWO, 0.8);
+					CommandBase.elevator.goTo(RobotMap.HATCHLEVELTWO, 0.8);
 					break;
 
 				case 3:
-					CommandBase.elevator.goTo(RobotMap.ELEVATORLEVELTHREE, 0.8);
+					CommandBase.elevator.goTo(RobotMap.HATCHLEVELTHREE, 0.8);
 					break;
 			}
 		}
-		
-		
-		//if (CommandBase.controls.Driver.getAButton()) {
-		//	System.out.println("???");
-		//	CommandBase.elevator.goTo(1500, 1);
-		//}
-		
-		/* and elif is neccecary here, because we believe that
-		flawed logic exists in the XboxController class which
-		fails to make GetAButton() false when B button is
-		pressed */
-
-		/*(else if (CommandBase.controls.Driver.getBButton()) {
-			CommandBase.elevator.goTo(3000, 1);
-		}
-
-		else {
-			// For safety reasons, we
-			// set the elevator motor to -0.
-			CommandBase.elevator.set(-leftSpeed); 
-		} */
-
-		
 	}
+	double actuatorSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight) - CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft);
+	
+	CommandBase.arm.setArm(actuatorSpeed);
+
+	}
+
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
