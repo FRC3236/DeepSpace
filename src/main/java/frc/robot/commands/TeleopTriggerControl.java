@@ -40,6 +40,7 @@ public class TeleopTriggerControl extends Command {
     if(!forward_stop){
       if (forward_acceleration){
           CommandBase.drivetrain.drive(multiplier, -multiplier);
+          
         }
       }
 

@@ -112,7 +112,7 @@ public class VisionRocket extends Subsystem {
 		ArrayList<Contour> contours = GetContours();
 		
 		// Sort the contours! //
-		contours = SortContours(contours, 1);
+				contours = SortContours(contours, 1);
 
 		ArrayList<ContourPair> pairs = new ArrayList<ContourPair>();
 
@@ -128,7 +128,7 @@ public class VisionRocket extends Subsystem {
 				}
 
 			}
-		}
+		} 
 		return pairs;
 	}
 
@@ -136,14 +136,15 @@ public class VisionRocket extends Subsystem {
 		
 		// speeds.get(0) is the left side of the drive train, speeds.get(1) is the right side
 		ArrayList<Double> speeds = new ArrayList<Double>();
-
 		ArrayList<ContourPair> pairs = GetContourPairs();
+
 		if (pairs.size() > 0) {
 
 			if (pairs.size() > 1) {
 				if (mode == AssistMode.CARGOROCKET) {
 
-				} else if (mode == AssistMode.HATCH) {
+				} 
+				else if (mode == AssistMode.HATCH) {
 
 				}
 			} else {
@@ -167,8 +168,12 @@ public class VisionRocket extends Subsystem {
 
 				double offset = pairX - cameraX;
 
+				double width_X = (rightX-leftX); // Use this scale for distance
+				SmartDashboard.putNumber("Midpoint Distance:", width_X);
+
+
 				// Make speedScaleConstant bigger if you want robot to slow down over a longer distance, and smaller if you want it to slow down over a shorter distance
-				double speedScaleConstant = 8;
+				double speedScaleConstant = 9;
 				double speedScale = Math.min(speedScaleConstant / (contourA.getWidth() + contourB.getWidth()/2), 1.0);
 				double scaledSpeed = Math.min(speed * speedScale, 1.0);
 

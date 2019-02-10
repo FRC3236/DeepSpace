@@ -30,10 +30,13 @@ public class TeleopVision extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		ArrayList<Double> speeds = CommandBase.visionRocket.DriveAlongArc(AssistMode.HATCH, 0.3);
+		System.out.println("Running teleop vision");
+		ArrayList<Double> speeds = CommandBase.visionRocket.DriveToPair(AssistMode.CARGOSHIP,
+		 0.75);
+		System.out.println(speeds);
 		SmartDashboard.putNumber("Gyro", CommandBase.drivetrain.getAngle());
+		CommandBase.drivetrain.drive(-speeds.get(0), speeds.get(1));
 		
-		CommandBase.drivetrain.drive(speeds.get(0), speeds.get(1));
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
