@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandBase;
+import frc.robot.subsystems.BallShooter;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.CommandBase;
 import frc.robot.commands.getDistance;
 import frc.robot.subsystems.Elevator;
 
@@ -29,30 +29,9 @@ public class TeleopMikeSmith extends Command {
 
     CommandBase.drivetrain.Drive(0,0);
   }
+public void DriveConfiguration(){
 
-  /*if CommandBase.controls.Driver.getAButtonPressed(true){
-    static int controltype = !controltype;
-
-  }*/
-
-
-  // Called repeatedly when this Command is scheduled to run
-/*
-  @Override
-  protected void execute() {
-    double leftsideSpeed, rightsideSpeed; 
-    leftsideSpeed = CommandBase.controls.Driver.getY(Hand.kLeft); //leftspeed = Left Xbox Stick Y axis
-    rightsideSpeed = CommandBase.controls.Driver.getY(Hand.kRight);//rightside speed = Right Xbox Stick Y axis
-    CommandBase.drivetrain.Drive(-leftsideSpeed, rightsideSpeed);
-    //elevatorspeed = CommandBase.controls
-  } */
-  //int getRawEncoderPos = CommandBase.elevator.getRawEncoderPos();
-
-
-
-  @Override
-  protected void execute() {
-    double backwardSpeed, forwardSpeed, lateralSpeed; 
+  double backwardSpeed, forwardSpeed, lateralSpeed; 
     backwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft); //leftspeed = Left Xbox Trigger axis
     forwardSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);//rightside speed = Right Xbox trigger
     lateralSpeed = CommandBase.controls.Driver.getX(Hand.kLeft); //lateral speed = Left Xbox Stick X axis
@@ -67,8 +46,38 @@ public class TeleopMikeSmith extends Command {
     else{
 
       CommandBase.drivetrain.Drive(0,0);
+
+
+
+
+      SmartDashboard.putNumber("leftspeed", leftSpeed);
+      SmartDashboard.putNumber("rightspeed", rightSpeed);
+      SmartDashboard.putNumber("lateralspeed", lateralSpeed);
     }
-    int getRawEncoderPos = CommandBase.elevator.getRawEncoderPos();
+}
+  public void BallConfiguration(){
+
+
+ double shootSpeed = CommandBase.controls.Operator.getTriggerAxis(Hand.kRight);
+ double catchSpeed = CommandBase.controls.Operator.getTriggerAxis(Hand.kLeft);
+
+if(shootSpeed > 0.1 && catchSpeed < 0.1){
+CommandBase.ballshooter.ShootBall(shootSpeed);
+}
+if(catchSpeed > 0.1 && shootSpeed < 0.1){
+CommandBase.ballshooter.CatchBall(catchSpeed);
+}
+if((catchSpeed > 0.1 && shootSpeed > 0.1) || (catchSpeed < 0.1 && shootSpeed < 0.1)){
+
+CommandBase.ballshooter.stopMotors();
+
+}
+
+
+
+
+  }
+  /*int getRawEncoderPos = CommandBase.elevator.getRawEncoderPos();
 
     double elevatorspeed;
     elevatorspeed = CommandBase.controls.Driver.getY(Hand.kRight)/1.5;
@@ -117,30 +126,24 @@ else{
     else if(CommandBase.controls.Driver.getBButton() != true){
       CommandBase.elevator.setMotors(0);
     }
-      }
+      } 
 
-/*boolean aButtonDown;
-aButtonDown = CommandBase.controls.Driver.getAButtonPressed();
-if(aButtonDown){
-  if(getRawEncoderPos< 3186);{
-  CommandBase.elevator.set;
-  if(getRawEncoderPos >= 3186){
-CommandBase.elevator.setMotors(-0.26);
-  }
+      SmartDashboard.putNumber("Elevator Speed", elevatorspeed );
+      SmartDashboard.putNumber("Encoder Position", getRawEncoderPos);
+      SmartDashboard.putBoolean("A button", CommandBase.controls.Driver.getAButton());
+      SmartDashboard.putBoolean("B button", CommandBase.controls.Driver.getBButton());
+*/ 
 
 
 
-}
-}*/
+  @Override
+  protected void execute() {
 
-//SmartDashbard Commands
-SmartDashboard.putNumber("Elevator Speed", elevatorspeed );
-SmartDashboard.putNumber("leftspeed", leftSpeed);
-SmartDashboard.putNumber("rightspeed", rightSpeed);
-SmartDashboard.putNumber("lateralspeed", lateralSpeed);
-SmartDashboard.putNumber("Encoder Position", getRawEncoderPos);
-SmartDashboard.putBoolean("A button", CommandBase.controls.Driver.getAButton());
-SmartDashboard.putBoolean("B button", CommandBase.controls.Driver.getBButton());
+    DriveConfiguration();
+    BallConfiguration();
+    
+
+
 
 
 
@@ -161,8 +164,7 @@ SmartDashboard.putBoolean("B button", CommandBase.controls.Driver.getBButton());
   protected void end() {
   }
 
-  // Called when another command which requires one or more of the same
-  // subsystems is scheduled to run
+
   @Override
   protected void interrupted() {
   }

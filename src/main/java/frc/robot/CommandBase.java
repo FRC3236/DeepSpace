@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot;
 import frc.robot.OI;
+import frc.robot.subsystems.BallShooter;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 //import frc.robot.subsystems.Elevator;
@@ -14,6 +15,7 @@ public class CommandBase {
   public static OI controls = new OI(); 
   public static DriveTrain drivetrain = new DriveTrain();
   public static Elevator elevator = new Elevator();
+  public static BallShooter ballshooter = new BallShooter();
   //public static Elevator elevator = new Elevator(
 
   //);
