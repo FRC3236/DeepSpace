@@ -21,10 +21,10 @@ public class RobotMap {
   public static int LEFTXBOX = 0; 
   public static int RIGHTXBOX = 1; 
 
-  public static int LEFTTALONA = 0;
-  public static int LEFTTALONB = 1; 
-  public static int RIGHTTALONA = 2; 
-  public static int RIGHTTALONB = 3; 
+  public static int LEFTVICTORA = 0;
+  public static int LEFTVICTORB = 1; 
+  public static int RIGHTVICTORA = 2; 
+  public static int RIGHTVICTORB = 3; 
 
 
   public static int ELEVATORTALON = 4;

@@ -10,7 +10,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
+
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.*;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -20,10 +23,10 @@ import org.team3236.DriveTrainMode;
 import org.team3236.Conversion;
 
 public class DriveTrain extends Subsystem {
-	private WPI_TalonSRX LeftTalonA = new WPI_TalonSRX(RobotMap.LEFTTALONA);
-	private WPI_TalonSRX LeftTalonB = new WPI_TalonSRX(RobotMap.LEFTTALONB);
-	private WPI_TalonSRX RightTalonA = new WPI_TalonSRX(RobotMap.RIGHTTALONA);
-	private WPI_TalonSRX RightTalonB = new WPI_TalonSRX(RobotMap.RIGHTTALONB);
+	private WPI_VictorSPX LeftVictorA = new WPI_VictorSPX(RobotMap.LEFTVICTORA);
+	private WPI_VictorSPX LeftVictorB = new WPI_VictorSPX(RobotMap.LEFTVICTORB);
+	private WPI_VictorSPX RightVictorA = new WPI_VictorSPX(RobotMap.RIGHTVICTORA);
+	private WPI_VictorSPX RightVictorB = new WPI_VictorSPX(RobotMap.RIGHTVICTORB);
 
 	private static AHRS NavX = new AHRS(SPI.Port.kMXP);
 
@@ -79,21 +82,21 @@ public class DriveTrain extends Subsystem {
 
 	public void setLeft(double speed) {
 		if (driveMode == DriveTrainMode.HATCH) {
-			LeftTalonA.set(speed);
-			LeftTalonB.set(speed);
+			LeftVictorA.set(speed);
+			LeftVictorB.set(speed);
 		} else {
-			LeftTalonA.set(-speed);
-			LeftTalonB.set(-speed);
+			LeftVictorA.set(-speed);
+			LeftVictorB.set(-speed);
 		}
 	}
 
 	public void setRight(double speed) {
 		if (driveMode == DriveTrainMode.HATCH) {
-			RightTalonA.set(-speed);
-			RightTalonB.set(-speed);
+			RightVictorA.set(-speed);
+			RightVictorB.set(-speed);
 		} else {
-			RightTalonA.set(speed);
-			RightTalonB.set(speed);
+			RightVictorA.set(speed);
+			RightVictorB.set(speed);
 		}
 	}
 

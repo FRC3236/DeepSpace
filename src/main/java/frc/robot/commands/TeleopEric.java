@@ -209,12 +209,11 @@ public class TeleopEric extends Command {
 			}
 		}
 		
-		double actuatorSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight) - CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft);
-		SmartDashboard.putNumber("ACTUATOR", CommandBase.arm.get());
+		double actuatorSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft) - CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
+		SmartDashboard.putBoolean("ACTUATOR", CommandBase.arm.getSensor(1));
 		SmartDashboard.putNumber("ACTUATOR RATE", CommandBase.arm.getRate());
-		if (CommandBase.arm.get() < 9) {
-			CommandBase.arm.setArm(actuatorSpeed);
-		}
+		//CommandBase.arm.setArm(actuatorSpeed);
+		CommandBase.arm.gotoSensor(1);
 
 	}
 
