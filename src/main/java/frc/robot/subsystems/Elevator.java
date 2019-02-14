@@ -26,11 +26,11 @@ public class Elevator extends Subsystem {
 
 		talonWithEncoder.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
 
-		talonWithEncoder2 = new WPI_TalonSRX(RobotMap.ELEVATORTALONENC2)
+		talonWithEncoder2 = new WPI_TalonSRX(RobotMap.ELEVATORTALONENC2);
 		
 		//talonWithEncoder2.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
 		//FIGURE OUT IF YOU NEED THIS
-		RobotMap.ELE
+//		RobotMap.ELE
 		conversion = new Conversion(40, Conversion.Units.IN); // Change the 40 later //
 	}
 
