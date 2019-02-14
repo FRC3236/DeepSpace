@@ -23,6 +23,8 @@ public class TeleopEric extends Command {
 	int desiredElevatorLevelHatch = 0;
 
 	boolean canSwitchDriveMode = true;
+	boolean armActive = true;
+
 	public TeleopEric() {
 	
 	}
@@ -212,12 +214,21 @@ public class TeleopEric extends Command {
 		double actuatorSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft) - CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
 		SmartDashboard.putBoolean("ACTUATOR", CommandBase.arm.getSensor(1));
 		SmartDashboard.putNumber("ACTUATOR RATE", CommandBase.arm.getRate());
-		//CommandBase.arm.setArm(actuatorSpeed);
-		CommandBase.arm.gotoSensor(1);
+		///CommandBase.arm.setArm(actuatorSpeed);
 
+		// Icky
+		// /*
+		if(armActive){
+			int currentArmStatus = CommandBase.arm.gotoSensor(1);
+			if(currentArmStatus == 0){
+				armActive = false;
+			}
+			else{
+				System.out.println("Errors occured...");
+			}
+		}
+		
 	}
-
-
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
