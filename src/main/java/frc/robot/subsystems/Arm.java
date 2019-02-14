@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import java.util.Arrays;
+import java.beans.DesignMode;
 import java.util.ArrayList;
 /**
  * Add your docs here.
@@ -33,8 +34,8 @@ public class Arm extends Subsystem {
 	private DigitalInput hallSensor0 = new DigitalInput(7);
 	private DigitalInput hallSensor1 = new DigitalInput(8);
 	private DigitalInput hallSensor2 = new DigitalInput(9);
-	static int previousPosition = -1;
-	
+	static int previousSensor = 0;
+	static boolean isRunning = false;
 
 	static private boolean ActuatorInTransit;
 
@@ -66,6 +67,14 @@ public class Arm extends Subsystem {
 		return potPort.getAverageBits();
 	}
 
+	public void toggleActivity(){
+		isRunning = !isRunning;
+	}
+
+	public boolean getActivity(){
+		return isRunning;
+	}
+
 	public void setArm(double speed){
 		// Update sensors
 		boolean sensor0Status = getSensor(0);
@@ -78,36 +87,71 @@ public class Arm extends Subsystem {
 			(speed > 0 && sensor0Status) = 1 & 0 = False
 			False || False = False
 			*/
-			System.out.println("Sensors (0):");
-			System.out.println(sensor0Status);
-			System.out.println(sensor2Status);
-
-			System.out.println(";");
 			actuator.set(speed);
 		}
 		else if (!sensor0Status && !sensor2Status){
 			/*
 			1 & 0 = 0 = False 
 			*/
-			System.out.println("Sensors (1):");
-			System.out.println(!sensor0Status);
-			System.out.println(!sensor2Status);
-
-			System.out.println(";");
 			actuator.set(speed);
 		}
 		else{
-			System.out.println("Sensors (2):");
-			System.out.println(sensor0Status);
-			System.out.println(sensor2Status);
-
-			System.out.println(";");
 			actuator.set(0);
 		}
 		
 		SmartDashboard.putBoolean("Hall Sensor 0:", sensor0Status);
 		SmartDashboard.putBoolean("Hall Sensor 1:", sensor1Status);
 		SmartDashboard.putBoolean("Hall Sensor 2:", sensor2Status);
+	}
+
+
+
+	public void setArm(double speed, int destinationSensor){
+		toggleActivity();
+		while (!getSensor(destinationSensor)){
+			setArm(speed);
+		}		
+		previousSensor = destinationSensor;
+		toggleActivity();
+	}
+	public void goToSensor(int destinationSensor){
+		if(previousSensor == 2)
+		{
+			if (destinationSensor == 2){
+				/* do nothing */
+			}
+			else{
+				setArm(-0.7, destinationSensor);
+			}
+			
+		}
+
+		else if (previousSensor == 1){
+			if (destinationSensor == 0){
+				setArm(-0.7, destinationSensor);
+			}
+			else if (destinationSensor == 1){
+				/* Don't move */
+			}
+			else if (destinationSensor == 2){
+				setArm(+0.7, destinationSensor);
+			}
+
+		}
+		else if (previousSensor == 0){
+			if (destinationSensor == 0){
+				/* Don't move */
+			}
+			else if (destinationSensor == 1){
+				setArm(+0.7, destinationSensor);
+			}
+			else if (destinationSensor == 2){
+				setArm(+0.7, destinationSensor);
+			}
+		}
+
+		
+
 	}
 
 

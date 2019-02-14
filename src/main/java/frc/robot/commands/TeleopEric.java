@@ -17,6 +17,7 @@ import frc.robot.RobotMap;
 import frc.robot.subsystems.*;
 
 
+
 public class TeleopEric extends Command {
 	
 	int desiredElevatorLevelCargo = 0;
@@ -224,6 +225,21 @@ public class TeleopEric extends Command {
 
 		if (CommandBase.controls.Driver.getBumperPressed(Hand.kRight)){
 			CommandBase.elevator.set(1);
+		}
+
+		if (CommandBase.arm.getActivity() == false){
+			if (CommandBase.controls.Operator.getYButtonPressed()){
+				CommandBase.arm.goToSensor(2);
+			}
+			if (CommandBase.controls.Operator.getBButtonPressed()){
+				CommandBase.arm.goToSensor(1);
+			}
+			if (CommandBase.controls.Operator.getAButtonPressed()){
+				CommandBase.arm.goToSensor(0);
+			}
+		}
+		else{
+			return;
 		}
 	}
 
