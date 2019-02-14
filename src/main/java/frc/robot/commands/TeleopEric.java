@@ -212,23 +212,22 @@ public class TeleopEric extends Command {
 		}
 		
 		double actuatorSpeed = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft) - CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
+		if (actuatorSpeed > 0.7){
+			actuatorSpeed = 0.7;
+		}
+		if (actuatorSpeed < -0.7){
+			actuatorSpeed = -0.7;
+		}
 		SmartDashboard.putBoolean("ACTUATOR", CommandBase.arm.getSensor(1));
 		SmartDashboard.putNumber("ACTUATOR RATE", CommandBase.arm.getRate());
-		///CommandBase.arm.setArm(actuatorSpeed);
+		CommandBase.arm.setArm(actuatorSpeed);
 
-		// Icky
-		// /*
-		if(armActive){
-			int currentArmStatus = CommandBase.arm.gotoSensor(1);
-			if(currentArmStatus == 0){
-				armActive = false;
-			}
-			else{
-				System.out.println("Errors occured...");
-			}
+		if (CommandBase.controls.Driver.getBumperPressed(Hand.kRight)){
+			CommandBase.elevator.set(1);
 		}
-		
 	}
+
+
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {

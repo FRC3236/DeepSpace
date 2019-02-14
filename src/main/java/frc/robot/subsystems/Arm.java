@@ -35,10 +35,8 @@ public class Arm extends Subsystem {
 	private DigitalInput hallSensor2 = new DigitalInput(9);
 	static int previousPosition = -1;
 	
-	boolean sensor0Status;
-	boolean sensor1Status;
-	boolean sensor2Status;
-	boolean ActuatorInTransit;
+
+	static private boolean ActuatorInTransit;
 
 	public Arm() {
 		//potPort.setGlobalSampleRate(samplesPerSecond);
@@ -53,161 +51,63 @@ public class Arm extends Subsystem {
 		return Math.ceil(potPort.getAverageVoltage() * 1000)/10;
 	}
 	public boolean getSensor(int sensor){
-		switch(sensor){
-			default:
-				//
-			case 0:
-				return !hallSensor0.get();
-			case 1:
-				return !hallSensor1.get();
-			case 2:
-				return !hallSensor2.get();
+		if(sensor == 0){
+			return !hallSensor0.get();
+		}
+		else if(sensor == 1){
+			return !hallSensor1.get();
+		}
+		else {
+			return !hallSensor2.get();
 		}
 	}
 
 	public double getRate() {
 		return potPort.getAverageBits();
 	}
-	public int gotoSensor(int destinationSensor){
-		// Update Sensors
-		sensor0Status = getSensor(0);
-		sensor1Status = getSensor(1);
-		sensor2Status = getSensor(2);
-		SmartDashboard.putBoolean("Hall Sensor 0:", sensor0Status);
-		SmartDashboard.putBoolean("Hall Sensor 1:", sensor1Status);
-		SmartDashboard.putBoolean("Hall Sensor 2:", sensor2Status);
-		SmartDashboard.putNumber("Last known sensor value: ", previousPosition);
-		boolean thisSensorStatus = getSensor(destinationSensor); // True when we are at given sensor
-		System.out.print("Desintation: "+destinationSensor);
-		System.out.print("Status" + sensor0Status + sensor1Status + sensor2Status);
-		if (thisSensorStatus)
-		{
-			return 0;
-		}
-
-		else
-		// Find direction we need to move; Initate movement.
-
-		{
-			// If this is first actuator movement and we are not already fully extended
-			if(previousPosition == -1 
-			&& !((!sensor0Status)
-			&& (!sensor1Status)
-			&& (!sensor2Status))){
-				/* First movement; Actuator is in default position; move forwards to destination */
-				setArm(0.5, destinationSensor);
-				return 0;
-			}
-			else if(previousPosition == 0){
-				/* Actuator has moved before, but re-initialized at some point;
-				 move forwards to destination */
-
-				 if(destinationSensor != 0){
-					setArm(0.5, destinationSensor);
-					return 0;
-				 }
-				 
-				 else{
-					 return 0; // Dont move from sensor 0 to sensor 0; that doesn't make sense.
-				 }
-			}
-			else if(previousPosition == 1){
-				/* Actuator has moved before; We are in middle position;
-				Move in a direction derived from value of desinationSensor towards the desination. */
-				
-				if(destinationSensor < previousPosition){
-					/* Actuator is moving from sensor1 to sensor0; move backwards to destination. */
-					setArm(-0.5, destinationSensor);
-					return 0;
-				}
-				else if(destinationSensor == previousPosition){
-					/* Actuator is moving from sensor 1 to sensor 1; Don't move. */
-					return 0;	
-				}
-				else if(destinationSensor > previousPosition){
-					/* Actuator is moving from sensor 1 to sensor 2; move forwards to destination */
-					setArm(0.5, destinationSensor);
-				}
-			}
-			else if(previousPosition == 2){
-				/* Actuator has moved before; Actuator is in extended position;
-				Move backwards to destination; */
-
-				if(destinationSensor != 2){
-					setArm(-0.5, destinationSensor);
-					return 0;
-				}
-				else{
-					// Don't move from sensor 2 to sensor 2; That doesn't make sense
-					return 0;
-				}
-			}
-			else if ((!sensor0Status) && (!sensor1Status) && (!sensor2Status)){
-				/* (0,0,0) must be fully extended past last encoder */
-				// Move backwards to destination
-				System.out.print("Gaston is confused... :/");
-				setArm(-0.5, destinationSensor);
-				return 0;
-			}
-
-		}
-		/* This code will not be reachable under normal conditions; 
-			It serves as a mechanism to detect movement error. */
-		return -1; 
-
-
-	}
 
 	public void setArm(double speed){
-		/* Negative values retract the actuator;
-		   Positive values extend the actuator; */
-
 		// Update sensors
-		sensor0Status = getSensor(0);
-		sensor1Status = getSensor(1);
-		sensor2Status = getSensor(2);
-		SmartDashboard.putBoolean("Hall Sensor 0:", sensor0Status);
-		SmartDashboard.putBoolean("Hall Sensor 1:", sensor1Status);
-		SmartDashboard.putBoolean("Hall Sensor 2:", sensor2Status);
+		boolean sensor0Status = getSensor(0);
+		boolean sensor1Status = getSensor(1);
+		boolean sensor2Status = getSensor(2);
 
-		actuator.set(-speed);
-	}
+		if((speed < 0 && sensor2Status) || (speed > 0 && sensor0Status)){
+			/* speed = 1; sensor2Status = True;
+			(speed < 0 && sensor2Status) = 0 & 1 = 1 = False
+			(speed > 0 && sensor0Status) = 1 & 0 = False
+			False || False = False
+			*/
+			System.out.println("Sensors (0):");
+			System.out.println(sensor0Status);
+			System.out.println(sensor2Status);
 
-	public void setArm(double speed, int destinationSensor){
-		/* Negative values retract the actuator;
-		   Positive values extend the actuator; */
+			System.out.println(";");
+			actuator.set(speed);
+		}
+		else if (!sensor0Status && !sensor2Status){
+			/*
+			1 & 0 = 0 = False 
+			*/
+			System.out.println("Sensors (1):");
+			System.out.println(!sensor0Status);
+			System.out.println(!sensor2Status);
 
-		// Update sensors
-		sensor0Status = getSensor(0);
-		sensor1Status = getSensor(1);
-		sensor2Status = getSensor(2);
-		SmartDashboard.putBoolean("Hall Sensor 0:", sensor0Status);
-		SmartDashboard.putBoolean("Hall Sensor 1:", sensor1Status);
-		SmartDashboard.putBoolean("Hall Sensor 2:", sensor2Status);
-
-		// Move arm in speed calculated by gotoSensor()
-		System.out.println("Moving Arm to desination...");
-		System.out.println("(Destionation = Sensor "+destinationSensor+")");
-		System.out.println("Speed: "+ speed);
-		actuator.set(speed);
-		System.out.println("Completed Arm Motion;");
-
-		// Update sensors again
-		sensor0Status = getSensor(0);
-		sensor1Status = getSensor(1);
-		sensor2Status = getSensor(2);
-		SmartDashboard.putBoolean("Hall Sensor 0:", sensor0Status);
-		SmartDashboard.putBoolean("Hall Sensor 1:", sensor1Status);
-		SmartDashboard.putBoolean("Hall Sensor 2:", sensor2Status);
-
-		// If we are at destinaiton, return;
-		if(getSensor(destinationSensor) == true){
-			System.out.print("Arrived at destination!");
-			return;
+			System.out.println(";");
+			actuator.set(speed);
 		}
 		else{
-			System.out.println("Gaston encountered an error... Gaston is sad :(");
+			System.out.println("Sensors (2):");
+			System.out.println(sensor0Status);
+			System.out.println(sensor2Status);
+
+			System.out.println(";");
+			actuator.set(0);
 		}
+		
+		SmartDashboard.putBoolean("Hall Sensor 0:", sensor0Status);
+		SmartDashboard.putBoolean("Hall Sensor 1:", sensor1Status);
+		SmartDashboard.putBoolean("Hall Sensor 2:", sensor2Status);
 	}
 
 
