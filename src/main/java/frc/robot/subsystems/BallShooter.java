@@ -42,7 +42,7 @@ RightBallShooter.set(-catchSpeed);
    
 public void stopMotors(){
 
-  LeftBallShooter.set(0);
+LeftBallShooter.set(0);
 
 RightBallShooter.set(0);
 

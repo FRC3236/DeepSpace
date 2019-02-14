@@ -74,6 +74,8 @@ CommandBase.ballshooter.stopMotors();
 }
 
 
+SmartDashboard.putNumber("catchSpeed", catchSpeed);
+SmartDashboard.putNumber("shootSpeed", shootSpeed);
 
 
   }
