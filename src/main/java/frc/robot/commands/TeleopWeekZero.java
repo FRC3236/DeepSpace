@@ -7,6 +7,9 @@ import frc.robot.CommandBase;
 
 public class TeleopWeekZero extends Command {
 
+	public TeleopWeekZero(){
+		//
+	}
 	// Create any variables we'll need
 	boolean canSwitchDriveMode = true;
 
@@ -43,7 +46,7 @@ public class TeleopWeekZero extends Command {
 		triggerRight = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
 
 		/* If both triggers are equal in value, allow them to cancel each other out */
-		forwardSpeed = (-triggerRight + triggerLeft);
+		forwardSpeed = (triggerLeft - triggerRight);
 
 		lateralSteeringSpeed = CommandBase.controls.Driver.getX(Hand.kLeft);
 
@@ -55,14 +58,14 @@ public class TeleopWeekZero extends Command {
 				lateralSteeringSpeed -= deadzone;
 			} else {
 				lateralSteeringSpeed += deadzone;
-			}
+			} 
 		}
 
-		// One Talon is reversed; reflect that.
-		double leftSpeed = (lateralSteeringSpeed-forwardSpeed);
-		double rightSpeed = (lateralSteeringSpeed+forwardSpeed);
-
-		CommandBase.drivetrain.drive(leftSpeed,rightSpeed);
+		if (lateralSteeringSpeed < 0) {
+			CommandBase.drivetrain.drive(forwardSpeed, forwardSpeed + lateralSteeringSpeed);
+		} else {
+			CommandBase.drivetrain.drive(forwardSpeed - lateralSteeringSpeed, forwardSpeed);
+		}
 
 		//Debugging
 		SmartDashboard.putNumber("Lateral Steerign Speed", lateralSteeringSpeed);
