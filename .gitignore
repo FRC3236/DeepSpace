@@ -136,8 +136,10 @@ $RECYCLE.BIN/
 *.lnk
 
 ### Gradle ###
-.gradle
+.gradle/
 /build/
+gradle/
+*.wpilib/
 
 # Ignore Gradle GUI config
 gradle-app.setting
