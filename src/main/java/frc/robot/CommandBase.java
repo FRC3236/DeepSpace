@@ -15,5 +15,6 @@ public class CommandBase {
   public static DriveTrain drivetrain = new DriveTrain();
   public static Elevator elevator = new Elevator();
   public static Arm arm = new Arm();
+	public static Cargo cargo = new Cargo();
 }
 

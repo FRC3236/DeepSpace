@@ -219,23 +219,21 @@ public class TeleopEric extends Command {
 		if (actuatorSpeed < -0.7){
 			actuatorSpeed = -0.7;
 		}
-		SmartDashboard.putBoolean("ACTUATOR", CommandBase.arm.getSensor(1));
-		SmartDashboard.putNumber("ACTUATOR RATE", CommandBase.arm.getRate());
-		CommandBase.arm.setArm(actuatorSpeed);
+		CommandBase.cargo.setArm(actuatorSpeed);
 
 		if (CommandBase.controls.Driver.getBumperPressed(Hand.kRight)){
 			CommandBase.elevator.set(1);
 		}
 
-		if (CommandBase.arm.getActivity() == false){
+		if (CommandBase.cargo.getActivity() == false){
 			if (CommandBase.controls.Operator.getYButtonPressed()){
-				CommandBase.arm.goToSensor(2);
+				CommandBase.cargo.goToSensor(2);
 			}
 			if (CommandBase.controls.Operator.getBButtonPressed()){
-				CommandBase.arm.goToSensor(1);
+				CommandBase.cargo.goToSensor(1);
 			}
 			if (CommandBase.controls.Operator.getAButtonPressed()){
-				CommandBase.arm.goToSensor(0);
+				CommandBase.cargo.goToSensor(0);
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
@@ -45,7 +46,7 @@ public class TeleopTriggerControl extends Command {
     double leftSpeed = (lateralSteeringSpeed-forwardSpeed);
     double rightSpeed = (lateralSteeringSpeed+forwardSpeed);
 
-    CommandBase.drivetrain.Drive(leftSpeed,rightSpeed);
+    CommandBase.drivetrain.drive(leftSpeed,rightSpeed);
 
     //Debugging
     SmartDashboard.putNumber("Lateral Steerign Speed", lateralSteeringSpeed);
