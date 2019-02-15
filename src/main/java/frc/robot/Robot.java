@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.TeleopDefault;
+import frc.robot.commands.TeleopEric;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,7 +23,7 @@ import frc.robot.commands.TeleopDefault;
  */
 public class Robot extends TimedRobot {
   public static CommandBase cmdBase;
-  public static TeleopDefault teleop;
+  public static TeleopEric teleop;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     cmdBase = new CommandBase();
     //CommandBase.drivetrain.InvertTalons();
-    teleop = new TeleopDefault();
+    teleop = new TeleopEric();
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
   }

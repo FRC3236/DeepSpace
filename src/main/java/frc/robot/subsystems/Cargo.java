@@ -26,6 +26,7 @@ public class Cargo extends Subsystem {
 	private int previousSensor = 0;
 
 	private double DEFAULTACTUATORSPEED = 0.7;
+	private double DEFAULTINTAKESPEED = 1;
 
 	public Cargo() {
 		actuator = new WPI_TalonSRX(RobotMap.ACTUATOR);
@@ -62,7 +63,9 @@ public class Cargo extends Subsystem {
 		intake.set(DEFAULTINTAKESPEED);
 	}
 
-	public void 
+	public void pushIntake() {
+		intake.set(-DEFAULTINTAKESPEED);
+	}
 
 	public void setArm(double speed) {
 		boolean isTooFar = getSensor(2);
