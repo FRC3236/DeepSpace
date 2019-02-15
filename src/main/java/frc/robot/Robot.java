@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.TeleopEric;
+import frc.robot.commands.TeleopWeekZero;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -103,14 +103,14 @@ public class Robot extends TimedRobot {
 		if (selectedMode == TeleopMode.DEFAULT) {
 			(new TeleopDefault()).start();
 		} else if (selectedMode == TeleopMode.ERIC) {
-			(new TeleopEric()).start();
+			(new TeleopWeekZero()).start();
 		} else if (selectedMode == TeleopMode.VISION) {
 			(new TeleopVision()).start();
 		}
 		else{
 			new TeleopVision().start();
 		} */
-		(new TeleopEric()).start();
+		(new TeleopWeekZero()).start();
 	}
 
 	/**

@@ -5,18 +5,28 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.CommandBase;
 import frc.robot.RobotMap;
 import org.team3236.Conversion;
+import org.team3236.DriveTrainMode;
+//import frc.robot.CommandBase;
 
 public class Elevator extends Subsystem {
 
+	private int[] CARGOLEVELS = {600, 1000, 2200};
+	private int[] HATCHLEVELS = {500, 1200, 3000};
+
 	private WPI_TalonSRX talon, talonWithEncoder;
 	public Conversion conversion;
+
+	private double DEFAULTSPEED = 0.7;
 
 	private static final double HOLDINGCONSTANT = 0.25; // The speed at which the motors stall
 	// Increase/decrease the holding constant to 
 	private static final double CAPTURERANGE = 0.7;
 	private static final int MAXHEIGHT = 4000; // In ticks
+
+	private int desiredLevel = 0;
 
 	public Elevator() {
 		talon = new WPI_TalonSRX(RobotMap.ELEVATORTALON);
@@ -128,7 +138,27 @@ public class Elevator extends Subsystem {
 		}
 	}
 
-	
+	public void increaseDesiredLevel() {
+		if (desiredLevel < 2) {
+			desiredLevel++;
+		}
+	}
+
+	public void decreaseDesiredLevel() {
+		if (desiredLevel > 0) {
+			desiredLevel--;
+		}
+	}
+
+	public void goToDesired() {
+		if (CommandBase.drivetrain.getDriveMode() == DriveTrainMode.CARGO) {
+			// Go to desired level in Cargo mode
+			goTo(CARGOLEVELS[desiredLevel], DEFAULTSPEED);
+		} else {
+			// Go to desired level in Hatch mode
+			goTo(HATCHLEVELS[desiredLevel], DEFAULTSPEED);
+		}
+	}
 
 	public void initDefaultCommand() {}
 }
