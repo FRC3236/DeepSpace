@@ -26,10 +26,6 @@ public class TeleopEric extends Command {
 	boolean canSwitchDriveMode = true;
 	boolean armActive = true;
 
-	public TeleopEric() {
-	
-	}
-
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {

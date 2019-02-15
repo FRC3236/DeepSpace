@@ -41,4 +41,6 @@ public class RobotMap {
 	public static final int HALLSENSOR2 = 9;
 
 	public static final int POTENTIOMETER = 0;
+
+	public static final int COMPRESSOR = 0;
 }
