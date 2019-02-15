@@ -10,17 +10,23 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
+
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.*;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SerialPort.*;
 
 import org.team3236.DriveTrainMode;
+import org.team3236.Conversion;
 
 public class DriveTrain extends Subsystem {
-	private WPI_TalonSRX LeftVictorA = new WPI_TalonSRX(RobotMap.LEFTVICTORA);
-	private WPI_TalonSRX LeftVictorB = new WPI_TalonSRX(RobotMap.LEFTVICTORB);
-	private WPI_TalonSRX RightVictorA = new WPI_TalonSRX(RobotMap.RIGHTVICTORA);
-	private WPI_TalonSRX RightVictorB = new WPI_TalonSRX(RobotMap.RIGHTVICTORB);
+	private WPI_VictorSPX LeftVictorA = new WPI_VictorSPX(RobotMap.LEFTVICTORA);
+	private WPI_VictorSPX LeftVictorB = new WPI_VictorSPX(RobotMap.LEFTVICTORB);
+	private WPI_VictorSPX RightVictorA = new WPI_VictorSPX(RobotMap.RIGHTVICTORA);
+	private WPI_VictorSPX RightVictorB = new WPI_VictorSPX(RobotMap.RIGHTVICTORB);
 
 	private static AHRS NavX = new AHRS(SPI.Port.kMXP);
 

@@ -219,8 +219,6 @@ public class TeleopEric extends Command {
 		if (actuatorSpeed < -0.7){
 			actuatorSpeed = -0.7;
 		}
-		SmartDashboard.putBoolean("ACTUATOR", CommandBase.arm.getSensor(1));
-		SmartDashboard.putNumber("ACTUATOR RATE", CommandBase.arm.getRate());
 		CommandBase.cargo.setArm(actuatorSpeed);
 
 		if (CommandBase.controls.Driver.getBumperPressed(Hand.kRight)){
