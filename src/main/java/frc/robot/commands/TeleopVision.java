@@ -7,35 +7,36 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.CommandBase;
-import frc.robot.Robot;
-import frc.robot.RobotMap;
+import java.util.ArrayList;
 
-public class TeleopDefault extends Command {
-	public TeleopDefault() {
-		// Use requires() here to declare subsystem dependencies
-		// eg. requires(chassis);
-		// Delete me
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.*;
+import org.team3236.AssistMode;
+import frc.robot.CommandBase;
+
+public class TeleopVision extends Command {
+	public TeleopVision() {
+		requires(CommandBase.visionRocket);
+		requires(CommandBase.drivetrain);
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-
+		
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		double forwardSpeed, lateralSpeed; 
-		forwardSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
-		lateralSpeed = CommandBase.controls.Driver.getX(Hand.kRight);
+		System.out.println("Running teleop vision");
+		ArrayList<Double> speeds = CommandBase.visionRocket.DriveToPair(AssistMode.CARGOSHIP,
+		 0.75);
+		System.out.println(speeds);
+		SmartDashboard.putNumber("Gyro", CommandBase.drivetrain.getAngle());
+		CommandBase.drivetrain.drive(-speeds.get(0), speeds.get(1));
 		
-		CommandBase.visionRocket.GetContourPairs();
-
-		CommandBase.drivetrain.drive(lateralSpeed - forwardSpeed, lateralSpeed + forwardSpeed);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
