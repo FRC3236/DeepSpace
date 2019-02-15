@@ -32,8 +32,8 @@ public class RobotMap {
 	public static final int INTAKE = 6;
 	public static final int ACTUATOR = 7;
 	
-	public static int SOLENOIDPORTONE  = 8;
-	public static int SOLENOIDPORTTWO = 9;
+	public static int SOLENOIDPORTONE  = 0;
+	public static int SOLENOIDPORTTWO = 1;
 	// ^^^ CAN BUS ^^^ //
 
 	public static final int HALLSENSOR0 = 7;

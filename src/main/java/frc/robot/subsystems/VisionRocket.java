@@ -131,7 +131,7 @@ public class VisionRocket extends Subsystem {
 		return pairs;
 	}
 
-	public ArrayList<Double> DriveToPair(AssistMode mode, double speed) {
+	public ArrayList<Double> DriveToPair(DriveTrainMode mode, double speed) {
 		
 		// speeds.get(0) is the left side of the drive train, speeds.get(1) is the right side
 		ArrayList<Double> speeds = new ArrayList<Double>();
@@ -140,10 +140,10 @@ public class VisionRocket extends Subsystem {
 		if (pairs.size() > 0) {
 
 			if (pairs.size() > 1) {
-				if (mode == AssistMode.CARGOROCKET) {
+				if (mode == DriveTrainMode.CARGO) {
 
 				} 
-				else if (mode == AssistMode.HATCH) {
+				else if (mode == DriveTrainMode.HATCH) {
 
 				}
 			} else {

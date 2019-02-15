@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandBase;
 import frc.robot.subsystems.Cargo;
+import org.team3236.DriveTrainMode;
 
 public class TeleopWeekZero extends Command {
 
@@ -16,14 +17,16 @@ public class TeleopWeekZero extends Command {
 	boolean canSwitchDriveMode = true;
 
 	private void switchDriveMode() {
-		boolean leftStick = CommandBase.controls.Driver.getStickButton(Hand.kLeft);
-        boolean rightStick = CommandBase.controls.Driver.getStickButton(Hand.kRight);
-		
-		if (leftStick && rightStick && canSwitchDriveMode) {
+		boolean driveModeSwitch = CommandBase.controls.Driver.getAButtonPressed();
+		if (driveModeSwitch){
 			CommandBase.drivetrain.switchDriveMode();
-			canSwitchDriveMode = false;
-		} else {
-			canSwitchDriveMode = true;
+		}
+	}
+
+	private void toggleAuto(){
+		boolean autoTogglePressed = CommandBase.controls.Driver.getBButton();
+		if (autoTogglePressed){
+			CommandBase.visionRocket.DriveToPair(CommandBase.drivetrain.getDriveMode(), 0.5);
 		}
 	}
 
@@ -92,7 +95,9 @@ public class TeleopWeekZero extends Command {
 		}
 	}
 
-
+	private void handAuto(){
+		
+	}
 	@Override
 	protected void initialize() {
 		CommandBase.elevator.zeroEncoder();
@@ -105,6 +110,7 @@ public class TeleopWeekZero extends Command {
 		handleDriving();
 		handleBallShooter();
 		handlePistons();
+		toggleAuto();
 	}
 
 	@Override
