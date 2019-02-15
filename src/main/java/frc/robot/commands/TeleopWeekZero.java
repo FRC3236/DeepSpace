@@ -8,8 +8,9 @@ import frc.robot.subsystems.Cargo;
 
 public class TeleopWeekZero extends Command {
 
+	private PushHatch pushHatch = new PushHatch();
 	public TeleopWeekZero(){
-		//
+	
 	}
 	// Create any variables we'll need
 	boolean canSwitchDriveMode = true;
@@ -83,6 +84,14 @@ public class TeleopWeekZero extends Command {
 		CommandBase.cargo.setIntake(motorSpeed);
 	}
 
+	private void handlePistons() {
+		if (CommandBase.controls.Operator.getBumperPressed(Hand.kRight)) {
+			pushHatch.cancel();
+			pushHatch = new PushHatch();
+			pushHatch.start();
+		}
+	}
+
 
 	@Override
 	protected void initialize() {
@@ -95,6 +104,7 @@ public class TeleopWeekZero extends Command {
 		handleElevatorLevel();
 		handleDriving();
 		handleBallShooter();
+		handlePistons();
 	}
 
 	@Override
