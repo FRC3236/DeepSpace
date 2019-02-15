@@ -20,7 +20,6 @@ public class RobotMap {
   // public static int rightMotor = 2;
   public static int LEFTXBOX = 0; 
   public static int RIGHTXBOX = 1; 
-
   public static int LEFTVICTORA = 0;
   public static int LEFTVICTORB = 1; 
   public static int RIGHTVICTORA = 2; 

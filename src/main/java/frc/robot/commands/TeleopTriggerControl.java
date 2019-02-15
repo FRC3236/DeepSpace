@@ -1,9 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
 
@@ -13,6 +7,7 @@ import frc.robot.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.CommandBase;
+import java.math.*;
 
 public class TeleopTriggerControl extends Command {
   public TeleopTriggerControl() {
@@ -30,31 +25,34 @@ public class TeleopTriggerControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    boolean forward_acceleration = CommandBase.controls.Driver.getXButtonPressed();
-    boolean backward_acceleration = CommandBase.controls.Driver.getAButtonPressed();
-    boolean forward_stop = CommandBase.controls.Driver.getXButtonReleased();
-    boolean backward_stop = CommandBase.controls.Driver.getAButtonReleased();
-    double multiplier = CommandBase.controls.Driver.getY(Hand.kRight);
+    double forwardSpeed,lateralSteeringSpeed,triggerLeft,triggerRight;
 
+    //Configure Driving control keymap
+    triggerLeft = CommandBase.controls.Driver.getTriggerAxis(Hand.kLeft);
+    triggerRight = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
 
-    if(!forward_stop){
-      if (forward_acceleration){
-          CommandBase.drivetrain.drive(multiplier, -multiplier);
-          
-        }
-      }
+    /* If both triggers are equal in value, allow them to cancel each other out */
+    forwardSpeed = (-triggerRight + triggerLeft);
 
-    if(!backward_stop){
-      if (backward_acceleration){
-        CommandBase.drivetrain.drive(-multiplier, multiplier);
-          }
-      }
-    
-    if (forward_stop || backward_stop){
-      CommandBase.drivetrain.drive(0, 0);
+    lateralSteeringSpeed = CommandBase.controls.Driver.getX(Hand.kLeft);
+
+    //Set deadzones to prevent unwanted jerks
+    if(Math.abs(lateralSteeringSpeed) <= 0.2){
+      lateralSteeringSpeed = 0;
     }
 
-    //CommandBase.drivetrain.Drive(leftSpeed, rightSpeed);
+    // One Talon is reversed; reflect that.
+    double leftSpeed = (lateralSteeringSpeed-forwardSpeed);
+    double rightSpeed = (lateralSteeringSpeed+forwardSpeed);
+
+    CommandBase.drivetrain.Drive(leftSpeed,rightSpeed);
+
+    //Debugging
+    SmartDashboard.putNumber("Lateral Steerign Speed", lateralSteeringSpeed);
+    SmartDashboard.putNumber("Left Trigger", triggerLeft);
+    SmartDashboard.putNumber("Right Trigger", triggerRight * -1);
+    SmartDashboard.putNumber("Forward Speed", forwardSpeed);
+    //Displays values in the Smart Dashboard
   }
 
   // Make this return true when this Command no longer needs to run execute()
