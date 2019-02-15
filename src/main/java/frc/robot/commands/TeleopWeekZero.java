@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandBase;
+import frc.robot.subsystems.Cargo;
 
 public class TeleopWeekZero extends Command {
 
@@ -75,6 +76,14 @@ public class TeleopWeekZero extends Command {
 		//Displays values in the Smart Dashboard
 	}
 
+	private void handleBallShooter(){
+		double rightTrigger = CommandBase.controls.Operator.getTriggerAxis(Hand.kRight);
+		double leftTrigger = CommandBase.controls.Operator.getTriggerAxis(Hand.kLeft);
+		double motorSpeed = rightTrigger-leftTrigger;
+		CommandBase.cargo.setIntake(motorSpeed);
+	}
+
+
 	@Override
 	protected void initialize() {
 		CommandBase.elevator.zeroEncoder();
@@ -85,6 +94,7 @@ public class TeleopWeekZero extends Command {
 		switchDriveMode();
 		handleElevatorLevel();
 		handleDriving();
+		handleBallShooter();
 	}
 
 	@Override
