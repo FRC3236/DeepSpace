@@ -14,37 +14,34 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
  * Add your docs here.
  */
 public class BallShooter extends Subsystem {
-  private WPI_TalonSRX LeftBallShooter = new WPI_TalonSRX(RobotMap.LEFTBALLMOTOR);
-  private WPI_TalonSRX RightBallShooter = new WPI_TalonSRX(RobotMap.RIGHTBALLMOTOR);
+  
+  private WPI_TalonSRX BallShooter = new WPI_TalonSRX(RobotMap.BALLMOTOR);
 
 public void setBallMotors(double motorSpeed){
 
-LeftBallShooter.set(motorSpeed);
-RightBallShooter.set(-motorSpeed);
+BallShooter.set(motorSpeed);
 }
 
 public void ShootBall(double shootSpeed){
 
-LeftBallShooter.set(shootSpeed);
 
-RightBallShooter.set(-shootSpeed);
+
+BallShooter.set(shootSpeed);
 
 }
 
 public void CatchBall(double catchSpeed){
 
-  LeftBallShooter.set(catchSpeed);
+  
 
-RightBallShooter.set(-catchSpeed);
+BallShooter.set(-catchSpeed);
 
 }
   
    
 public void stopMotors(){
 
-LeftBallShooter.set(0);
-
-RightBallShooter.set(0);
+BallShooter.set(0);
 
 }
 
