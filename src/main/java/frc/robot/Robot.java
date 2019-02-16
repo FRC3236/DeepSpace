@@ -20,6 +20,10 @@ import frc.robot.commands.TeleopWeekZero;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
+
+/* Operator controller: Port 0
+	Driver controller: Port 1
+*/
 public class Robot extends TimedRobot {
 
 	public enum TeleopMode {
@@ -85,7 +89,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		
+		(new TeleopWeekZero()).start();
 	}
 
 	/**
