@@ -43,4 +43,5 @@ public class RobotMap {
 	public static final int POTENTIOMETER = 0;
 
 	public static final int COMPRESSOR = 0;
+	public static final int ELEVATORLIMITSWITCH = 6;
 }

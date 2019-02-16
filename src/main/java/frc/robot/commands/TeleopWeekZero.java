@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.CommandBase;
 import frc.robot.subsystems.Cargo;
+import frc.robot.subsystems.Elevator;
+
 import org.team3236.DriveTrainMode;
 
 public class TeleopWeekZero extends Command {
@@ -15,6 +17,10 @@ public class TeleopWeekZero extends Command {
 	}
 	// Create any variables we'll need
 	boolean canSwitchDriveMode = true;
+	boolean limitSwitchPressed = false;
+	double elevatorSpeedConstant = 0;
+	double defaultElevatorSpeedConstant;
+
 
 	private void switchDriveMode() {
 		boolean driveModeSwitch = CommandBase.controls.Driver.getAButtonPressed();
@@ -30,6 +36,8 @@ public class TeleopWeekZero extends Command {
 		}
 	}
 
+// As of week zero, this may over/under-extend the Elevator.
+/*
 	private void handleElevatorLevel() {
 		if (CommandBase.controls.Operator.getYButtonPressed()) {
 			CommandBase.elevator.increaseDesiredLevel();
@@ -40,9 +48,31 @@ public class TeleopWeekZero extends Command {
             CommandBase.elevator.goToDesired();
 		}
 	}
-
+*/
+	public void handElevatorSlowDown(){
+		if(CommandBase.controls.Operator.getAButton()){
+			elevatorSpeedConstant = defaultElevatorSpeedConstant;
+		}
+		else{
+			elevatorSpeedConstant = 0;
+		}
+	}
 	public void handleRawElevatorControl() {
-		CommandBase.elevator.set(-CommandBase.controls.Operator.getY(Hand.kLeft));
+		SmartDashboard.putBoolean("Elevator Limit-Switch of Death", limitSwitchPressed);
+		
+		if(elevatorSpeedConstant != 0 && limitSwitchPressed){
+			elevatorSpeedConstant = 0;
+		}
+		else if(!limitSwitchPressed){
+			elevatorSpeedConstant = defaultElevatorSpeedConstant; // Arbitrary number
+		}
+		
+		double elevatorSpeed = (CommandBase.controls.Operator.getTriggerAxis(Hand.kRight) 
+							- CommandBase.controls.Operator.getTriggerAxis(Hand.kLeft)
+							- elevatorSpeedConstant);
+		
+
+		CommandBase.elevator.set(elevatorSpeed);
 		SmartDashboard.putNumber("ELEVATOR UP", CommandBase.controls.Operator.getY(Hand.kLeft));
 
 		double right = CommandBase.controls.Operator.getY(Hand.kRight);
@@ -85,7 +115,7 @@ public class TeleopWeekZero extends Command {
 		}
 
 		//Debugging
-		SmartDashboard.putNumber("Lateral Steerign Speed", lateralSteeringSpeed);
+		SmartDashboard.putNumber("Lateral Steering Speed", lateralSteeringSpeed);
 		SmartDashboard.putNumber("Left Trigger", triggerLeft);
 		SmartDashboard.putNumber("Right Trigger", triggerRight * -1);
 		SmartDashboard.putNumber("Forward Speed", forwardSpeed);
@@ -94,10 +124,8 @@ public class TeleopWeekZero extends Command {
 	}
 
 	private void handleBallShooter(){
-		double rightTrigger = CommandBase.controls.Operator.getTriggerAxis(Hand.kRight);
-		double leftTrigger = CommandBase.controls.Operator.getTriggerAxis(Hand.kLeft);
-		double motorSpeed = rightTrigger-leftTrigger;
-		CommandBase.cargo.setIntake(motorSpeed);
+		double shooterSpeed = CommandBase.controls.Operator.getY(Hand.kRight);
+		CommandBase.cargo.setIntake(shooterSpeed);
 	}
 
 	private void handlePistons() {
@@ -105,9 +133,6 @@ public class TeleopWeekZero extends Command {
 			pushHatch.cancel();
 			pushHatch = new PushHatch();
 			pushHatch.start();
-		}
-		if (CommandBase.controls.Operator.getStickButtonPressed(Hand.kLeft)) {
-			
 		}
 	}
 
@@ -122,6 +147,8 @@ public class TeleopWeekZero extends Command {
 
 	@Override
 	protected void execute() {
+		boolean limitSwitchPressed = CommandBase.elevator.getLimitSwitch();
+
 		switchDriveMode();
 		//handleElevatorLevel();
 		handleDriving();
@@ -129,6 +156,7 @@ public class TeleopWeekZero extends Command {
 		handlePistons();
 		toggleAuto();
 		handleRawElevatorControl();
+
 	}
 
 	@Override

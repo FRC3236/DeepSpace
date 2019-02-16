@@ -9,6 +9,7 @@ import frc.robot.CommandBase;
 import frc.robot.RobotMap;
 import org.team3236.Conversion;
 import org.team3236.DriveTrainMode;
+import edu.wpi.first.wpilibj.DigitalInput;
 //import frc.robot.CommandBase;
 
 public class Elevator extends Subsystem {
@@ -18,6 +19,7 @@ public class Elevator extends Subsystem {
 
 	private WPI_TalonSRX talon, talonWithEncoder;
 	public Conversion conversion;
+	DigitalInput limitSwitch;
 
 	private double DEFAULTSPEED = 0.7;
 
@@ -28,7 +30,9 @@ public class Elevator extends Subsystem {
 
 	private int desiredLevel = 0;
 
+
 	public Elevator() {
+		limitSwitch = new DigitalInput(RobotMap.ELEVATORLIMITSWITCH);
 		talon = new WPI_TalonSRX(RobotMap.ELEVATORTALON);
 		talonWithEncoder = new WPI_TalonSRX(RobotMap.ELEVATORTALONENC);
 
@@ -48,6 +52,10 @@ public class Elevator extends Subsystem {
 
 	public double getEncoder() {
 		return conversion.getInches(getRawEncoder());
+	}
+
+	public boolean getLimitSwitch(){
+		return limitSwitch.get();
 	}
 
 	public void ascend(double speed) {
