@@ -12,7 +12,7 @@ public class Hatch extends Subsystem {
     
     public Hatch() {
         compressor = new Compressor(RobotMap.COMPRESSOR);
-        solenoid = new DoubleSolenoid(RobotMap.SOLENOIDPORTONE, RobotMap.SOLENOIDPORTTWO);
+        solenoid = new DoubleSolenoid(0, 1);
     
         retractPistons();
     }

@@ -41,6 +41,15 @@ public class TeleopWeekZero extends Command {
 		}
 	}
 
+	public void handleRawElevatorControl() {
+		CommandBase.elevator.set(-CommandBase.controls.Operator.getY(Hand.kLeft));
+		SmartDashboard.putNumber("ELEVATOR UP", CommandBase.controls.Operator.getY(Hand.kLeft));
+
+		double right = CommandBase.controls.Operator.getY(Hand.kRight);
+		CommandBase.cargo.setArm(right);
+		CommandBase.cargo.getSensor(1);
+	}
+
 	private void handleDriving() {
         
 		double forwardSpeed, lateralSteeringSpeed, triggerLeft, triggerRight;
@@ -65,11 +74,14 @@ public class TeleopWeekZero extends Command {
 				lateralSteeringSpeed += deadzone;
 			} 
 		}
-
-		if (lateralSteeringSpeed < 0) {
-			CommandBase.drivetrain.drive(forwardSpeed, forwardSpeed + lateralSteeringSpeed);
+		if (Math.abs(forwardSpeed)>0.05) {
+			if (lateralSteeringSpeed < 0) {
+				CommandBase.drivetrain.drive(forwardSpeed, forwardSpeed + lateralSteeringSpeed);
+			} else {
+				CommandBase.drivetrain.drive(forwardSpeed - lateralSteeringSpeed, forwardSpeed);
+			}
 		} else {
-			CommandBase.drivetrain.drive(forwardSpeed - lateralSteeringSpeed, forwardSpeed);
+			CommandBase.drivetrain.drive(-lateralSteeringSpeed, lateralSteeringSpeed);
 		}
 
 		//Debugging
@@ -77,6 +89,7 @@ public class TeleopWeekZero extends Command {
 		SmartDashboard.putNumber("Left Trigger", triggerLeft);
 		SmartDashboard.putNumber("Right Trigger", triggerRight * -1);
 		SmartDashboard.putNumber("Forward Speed", forwardSpeed);
+		SmartDashboard.putNumber("Elevator", CommandBase.elevator.getRawEncoder());
 		//Displays values in the Smart Dashboard
 	}
 
@@ -93,6 +106,9 @@ public class TeleopWeekZero extends Command {
 			pushHatch = new PushHatch();
 			pushHatch.start();
 		}
+		if (CommandBase.controls.Operator.getStickButtonPressed(Hand.kLeft)) {
+			
+		}
 	}
 
 	private void handAuto(){
@@ -101,16 +117,18 @@ public class TeleopWeekZero extends Command {
 	@Override
 	protected void initialize() {
 		CommandBase.elevator.zeroEncoder();
+		CommandBase.hatch.setCompressor(true);
 	}
 
 	@Override
 	protected void execute() {
 		switchDriveMode();
-		handleElevatorLevel();
+		//handleElevatorLevel();
 		handleDriving();
 		handleBallShooter();
 		handlePistons();
 		toggleAuto();
+		handleRawElevatorControl();
 	}
 
 	@Override

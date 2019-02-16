@@ -26,8 +26,8 @@ public class RobotMap {
 	public static int RIGHTVICTORA = 2; 
 	public static int RIGHTVICTORB = 3; 
 
-	public static int ELEVATORTALON = 4;
-	public static int ELEVATORTALONENC = 5;
+	public static int ELEVATORTALON = 5;
+	public static int ELEVATORTALONENC = 4;
 
 	public static final int INTAKE = 6;
 	public static final int ACTUATOR = 7;

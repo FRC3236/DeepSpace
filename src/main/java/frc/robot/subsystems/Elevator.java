@@ -56,11 +56,11 @@ public class Elevator extends Subsystem {
 			double captureHeight = MAXHEIGHT * CAPTURERANGE;
 			double motorSpeed = Math.min(gaston(MAXHEIGHT, speed, captureHeight), speed);
 			
-			talon.set(-motorSpeed);
-			talonWithEncoder.set(motorSpeed);
+			talon.set(motorSpeed);
+			talonWithEncoder.set(-motorSpeed);
 		} else {
-			talon.set(-speed);
-			talonWithEncoder.set(speed);
+			talon.set(speed);
+			talonWithEncoder.set(-speed);
 		}
 	}
 	
@@ -70,8 +70,8 @@ public class Elevator extends Subsystem {
 			talon.set(0);
 			talonWithEncoder.set(0);
 		} else {
-			talon.set(-speed);
-			talonWithEncoder.set(speed);
+			talon.set(speed);
+			talonWithEncoder.set(-speed);
 		}
 	}
 
@@ -126,8 +126,8 @@ public class Elevator extends Subsystem {
 
 		SmartDashboard.putNumber("Elevator Speed", speed);
 
-		talon.set(-speed);
-		talonWithEncoder.set(speed);
+		talon.set(speed);
+		talonWithEncoder.set(-speed);
 	}
 
 	public void set(double speed) {

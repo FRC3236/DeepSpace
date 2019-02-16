@@ -8,10 +8,12 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
+
 
 /**
  * Add your docs here.
@@ -46,6 +48,9 @@ public class Cargo extends Subsystem {
 	}
 
 	public boolean getSensor(int sensor) {
+		SmartDashboard.putBoolean("FIRST HALL", !hallSensor0.get());
+		SmartDashboard.putBoolean("SECOND HALL", !hallSensor1.get());
+		SmartDashboard.putBoolean("THIRD HALL", !hallSensor2.get());
 		if (sensor == 0) {
 			return !hallSensor0.get();
 		} else if (sensor == 1) {
