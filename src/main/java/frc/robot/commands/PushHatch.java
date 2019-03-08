@@ -7,51 +7,50 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.CommandBase;
-import frc.robot.Robot;
-import frc.robot.RobotMap;
 
-public class TeleopDefault extends Command {
-	public TeleopDefault() {
-		// Use requires() here to declare subsystem dependencies
-		// eg. requires(chassis);
-		// Delete me
+public class PushHatch extends Command {
+	private Timer timer;
+	public PushHatch() {
+		timer = new Timer();
+		timer.reset();
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-
+		CommandBase.hatch.retractPistons();
+		timer.start();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		double forwardSpeed, lateralSpeed; 
-		forwardSpeed = CommandBase.controls.Driver.getY(Hand.kLeft);
-		lateralSpeed = CommandBase.controls.Driver.getX(Hand.kRight);
-		
-		CommandBase.visionRocket.GetContourPairs();
-
-		CommandBase.drivetrain.drive(lateralSpeed - forwardSpeed, lateralSpeed + forwardSpeed);
+		CommandBase.hatch.extendPistons();
+		if (timer.get() > 0.5) {
+			CommandBase.hatch.retractPistons();
+		}
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		return false;
+		return timer.get() > 0.6;
 	}
 
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
+		timer.stop();
+		CommandBase.hatch.retractPistons();
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	@Override
 	protected void interrupted() {
+		end();
 	}
 }

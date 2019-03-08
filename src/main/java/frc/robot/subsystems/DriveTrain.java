@@ -8,50 +8,106 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-/**
- * An example subsystem.  You can replace me with your own Subsystem.
- */
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.kauailabs.navx.frc.*;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SerialPort.*;
+
+import org.team3236.DriveTrainMode;
+import org.team3236.Conversion;
 
 public class DriveTrain extends Subsystem {
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
-  private WPI_TalonSRX LeftTalonA = new WPI_TalonSRX(RobotMap.LEFTTALONA);
-  private WPI_TalonSRX LeftTalonB = new WPI_TalonSRX(RobotMap.LEFTTALONB);
-  private WPI_TalonSRX RightTalonA = new WPI_TalonSRX(RobotMap.RIGHTTALONA);
-  private WPI_TalonSRX RightTalonB = new WPI_TalonSRX(RobotMap.RIGHTTALONB);
+	private WPI_VictorSPX LeftVictorA = new WPI_VictorSPX(RobotMap.LEFTVICTORA);
+	private WPI_VictorSPX LeftVictorB = new WPI_VictorSPX(RobotMap.LEFTVICTORB);
+	private WPI_VictorSPX RightVictorA = new WPI_VictorSPX(RobotMap.RIGHTVICTORA);
+	private WPI_VictorSPX RightVictorB = new WPI_VictorSPX(RobotMap.RIGHTVICTORB);
 
-  public void InvertTalons()
-  {
-    RightTalonA.setInverted(true);
-    RightTalonB.setInverted(true);
-  }
+	private static AHRS NavX = new AHRS(SPI.Port.kMXP);
 
-  public void SetLeft(double speed){
-    LeftTalonA.set(speed);
-    LeftTalonB.set(speed);
-  }
 
-  public void SetRight(double speed){
-    RightTalonA.set(speed);
-    RightTalonB.set(speed);
-  }
+	private DriveTrainMode driveMode = DriveTrainMode.CARGO;
 
-  public void Drive(double leftSpeed, double rightSpeed){
-    SetLeft(leftSpeed);
-    SetRight(rightSpeed);
-  }
+	public DriveTrain() {
 
-  @Override
-  public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-  }
-  
-  
+		// Reset the Gyro to 0 degrees //
+		this.resetGyro();
+
+		// Put the drivemode on the display //
+		this.updateSmartDashboard();
+	}
+
+	public void updateSmartDashboard() {
+		if (this.driveMode == DriveTrainMode.CARGO) {
+			SmartDashboard.putString("Drive Mode", "CARGO");
+		} else {
+			SmartDashboard.putString("Drive Mode", "HATCH");
+		}
+	}
+
+	public double getAngle() {
+		return NavX.getAngle();
+	}
+
+	public double getPitch() {
+		return NavX.getPitch();
+	}
+
+	public void resetGyro() {
+		NavX.reset();
+	}
+
+	public void setDriveMode(DriveTrainMode newMode) {
+		this.driveMode = newMode;
+		this.updateSmartDashboard();
+	}
+
+	public void switchDriveMode() {
+		if (this.driveMode == DriveTrainMode.HATCH) {
+			this.driveMode = DriveTrainMode.CARGO;
+		} else {
+			this.driveMode = DriveTrainMode.HATCH;
+		}
+		this.updateSmartDashboard();
+	}
+
+	public DriveTrainMode getDriveMode() {
+		return this.driveMode;
+	}
+
+	public void setLeft(double speed) {
+		if (driveMode == DriveTrainMode.HATCH) {
+			LeftVictorA.set(speed);
+			LeftVictorB.set(speed);
+		} else {
+			LeftVictorA.set(-speed);
+			LeftVictorB.set(-speed);
+		}
+	}
+
+	public void setRight(double speed) {
+		if (driveMode == DriveTrainMode.HATCH) {
+			RightVictorA.set(-speed);
+			RightVictorB.set(-speed);
+		} else {
+			RightVictorA.set(speed);
+			RightVictorB.set(speed);
+		}
+	}
+
+	public void drive(double leftSpeed, double rightSpeed){
+		setLeft(leftSpeed);
+		setRight(rightSpeed);
+
+	}
+
+	@Override
+	public void initDefaultCommand() {}
+	
+	
 }
