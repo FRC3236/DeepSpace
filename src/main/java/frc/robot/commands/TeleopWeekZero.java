@@ -19,8 +19,9 @@ public class TeleopWeekZero extends Command {
 	// Create any variables we'll need
 	boolean canSwitchDriveMode = true;
 	boolean limitSwitchPressed = false;
+	double lastSpeed;
 	double elevatorSpeedConstant = 0;
-	double defaultElevatorSpeedConstant = 0.05;
+	double defaultElevatorSpeedConstant = 0.05; // TODO: change me
 
 
 	private void switchDriveMode() {
@@ -50,7 +51,7 @@ public class TeleopWeekZero extends Command {
 		}
 	}
 */
-	public void handElevatorSlowDown(){
+	public void handleElevatorSlowDown(){
 		if(CommandBase.controls.Operator.getAButton()){
 			elevatorSpeedConstant = defaultElevatorSpeedConstant;
 		}
@@ -69,12 +70,18 @@ public class TeleopWeekZero extends Command {
 		}*/
 				
 		double elevatorSpeed = (CommandBase.controls.Operator.getTriggerAxis(Hand.kLeft) 
-							- CommandBase.controls.Operator.getTriggerAxis(Hand.kRight)
+							
 							+ elevatorSpeedConstant);
 		
-
-		CommandBase.elevator.set(elevatorSpeed);
-		SmartDashboard.putNumber("Elever Speed: ", elevatorSpeed);
+		if (CommandBase.controls.Operator.getTriggerAxis(Hand.kRight) < 0.1){
+			//lastSpeed = elevatorSpeed;
+			CommandBase.elevator.set(elevatorSpeed);
+		}
+		else{
+			CommandBase.elevator.set(0.25);
+			//CommandBase.elevator.set(lastSpeed);
+		}
+		SmartDashboard.putNumber("e-Lever Speed: ", elevatorSpeed);
 
 		double actuatorSpeed = -CommandBase.controls.Operator.getY(Hand.kLeft);
 		CommandBase.cargo.setArm(actuatorSpeed*0.7);
@@ -167,7 +174,7 @@ public class TeleopWeekZero extends Command {
 		handleBallShooter();
 		handlePistons();
 		toggleAuto();
-		handElevatorSlowDown();
+		handleElevatorSlowDown();
 		handleRawElevatorControl();
 
 	}
