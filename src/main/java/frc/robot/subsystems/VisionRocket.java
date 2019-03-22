@@ -264,8 +264,8 @@ public class VisionRocket extends Subsystem {
 			}
 			
 
-			SmartDashboard.putNumber("Desired", desiredAngle);
-			SmartDashboard.putNumber("Modded", moddedAngle);
+			//SmartDashboard.putNumber("Desired", desiredAngle);
+			//SmartDashboard.putNumber("Modded", moddedAngle);
 
 			// Check if our current angle is within 10 degrees of our normal angle
 			System.out.println("Normal: " + normalAngle);
@@ -279,8 +279,8 @@ public class VisionRocket extends Subsystem {
 					speeds.add(-turnSpeed);
 					speeds.add(turnSpeed);
 				}
-				SmartDashboard.putNumber("Speed Left", speeds.get(0));
-				SmartDashboard.putNumber("Speed Right", speeds.get(1));
+				//SmartDashboard.putNumber("Speed Left", speeds.get(0));
+				//SmartDashboard.putNumber("Speed Right", speeds.get(1));
 				return speeds;
 			} else {
 				if (!drivingAlongArc) {	
@@ -323,8 +323,8 @@ public class VisionRocket extends Subsystem {
 				}
 
 				System.out.println("Speeds: I(" + innerSpeed + ") O(" + outerSpeed +")");
-				SmartDashboard.putNumber("Speed Left", speeds.get(0));
-				SmartDashboard.putNumber("Speed Right", speeds.get(1));
+				//SmartDashboard.putNumber("Speed Left", speeds.get(0));
+				//SmartDashboard.putNumber("Speed Right", speeds.get(1));
 				return speeds;
 			}
 
@@ -333,8 +333,8 @@ public class VisionRocket extends Subsystem {
 
 		speeds.add(0.0);
 		speeds.add(0.0);
-		SmartDashboard.putNumber("Speed Left", speeds.get(0));
-		SmartDashboard.putNumber("Speed Right", speeds.get(1));
+		//SmartDashboard.putNumber("Speed Left", speeds.get(0));
+		//SmartDashboard.putNumber("Speed Right", speeds.get(1));
 		return speeds;
 	}
 }

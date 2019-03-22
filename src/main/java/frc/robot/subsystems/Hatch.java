@@ -9,6 +9,7 @@ import frc.robot.RobotMap;
 public class Hatch extends Subsystem {
     private Compressor compressor;
     private DoubleSolenoid solenoid;
+
     
     public Hatch() {
         compressor = new Compressor(RobotMap.COMPRESSOR);

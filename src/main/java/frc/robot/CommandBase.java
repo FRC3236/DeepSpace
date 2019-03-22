@@ -16,5 +16,6 @@ public class CommandBase {
   public static Elevator elevator = new Elevator();
   public static Cargo cargo = new Cargo();
   public static Hatch hatch = new Hatch();
+  public static EndGame endgame = new EndGame();
 }
 

@@ -131,9 +131,6 @@ public class Elevator extends Subsystem {
 
 		System.out.println(destination);
 		double speed = gaston(destination, rawSpeed);
-
-		SmartDashboard.putNumber("Elevator Speed", speed);
-
 		talon.set(speed);
 		talonWithEncoder.set(-speed);
 	}

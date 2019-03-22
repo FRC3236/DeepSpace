@@ -122,6 +122,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		SmartDashboard.putBoolean("lift piston", CommandBase.endgame.isOpen());
 		Scheduler.getInstance().run();
 	}
 

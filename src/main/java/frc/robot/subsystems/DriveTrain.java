@@ -44,22 +44,30 @@ public class DriveTrain extends Subsystem {
 
 	public void updateSmartDashboard() {
 		if (this.driveMode == DriveTrainMode.CARGO) {
-			SmartDashboard.putString("Drive Mode", "CARGO");
-		} else {
-			SmartDashboard.putString("Drive Mode", "HATCH");
+			SmartDashboard.putString("Drive Mode", "Cargo");
+		} 
+		else if (this.driveMode == DriveTrainMode.HATCH)  {
+			SmartDashboard.putString("Drive Mode", "Hatch");
+		}
+		else if (this.driveMode == DriveTrainMode.ENDGAME){
+			SmartDashboard.putString("Drive Mode", "Endgame");
+
 		}
 	}
 
 	public double getAngle() {
-		return NavX.getAngle();
+		// return NavX.getAngle();
+		return 0.00;
 	}
 
 	public double getPitch() {
-		return NavX.getPitch();
+		//return NavX.getPitch();
+		return 0.00;
 	}
 
 	public void resetGyro() {
-		NavX.reset();
+		// NavX.reset();
+		return;
 	}
 
 	public void setDriveMode(DriveTrainMode newMode) {
@@ -67,8 +75,14 @@ public class DriveTrain extends Subsystem {
 		this.updateSmartDashboard();
 	}
 
+	public void toggleEndGameMode(){
+		System.out.println("!!");
+		this.driveMode = DriveTrainMode.ENDGAME;
+		this.updateSmartDashboard();
+	}
+	
 	public void switchDriveMode() {
-		if (this.driveMode == DriveTrainMode.HATCH) {
+		if (this.driveMode == DriveTrainMode.HATCH || this.driveMode == DriveTrainMode.ENDGAME) {
 			this.driveMode = DriveTrainMode.CARGO;
 		} else {
 			this.driveMode = DriveTrainMode.HATCH;

@@ -24,12 +24,22 @@ public class TeleopWeekZero extends Command {
 	double defaultElevatorSpeedConstant = 0.05; // TODO: change me
 
 
+	
 	private void switchDriveMode() {
-		boolean driveModeSwitch = CommandBase.controls.Driver.getAButtonPressed();
-		if (driveModeSwitch){
-			CommandBase.drivetrain.switchDriveMode();
+		System.out.print(CommandBase.drivetrain.getDriveMode());
+		if(CommandBase.drivetrain.getDriveMode() != DriveTrainMode.ENDGAME){
+			boolean driveModeSwitch = CommandBase.controls.Driver.getAButtonPressed();
+			if (driveModeSwitch){
+				CommandBase.drivetrain.switchDriveMode();
+			}
+		}
+
+		boolean climbModeToggle = CommandBase.controls.Driver.getBumperPressed(Hand.kRight);
+		if(climbModeToggle){
+			CommandBase.drivetrain.toggleEndGameMode();
 		}
 	}
+
 
 	private void toggleAuto(){
 		boolean autoTogglePressed = CommandBase.controls.Driver.getBButton();
@@ -46,11 +56,12 @@ public class TeleopWeekZero extends Command {
 		} else if (CommandBase.controls.Operator.getBButtonPressed()) {
 			CommandBase.elevator.decreaseDesiredLevel();
 		} else if (CommandBase.controls.Operator.getAButton()) {
-            // geta-button, sponsored by boeing.
+            // geta-button, sponsored by Boeing.
             CommandBase.elevator.goToDesired();
 		}
 	}
 */
+	
 	public void handleElevatorSlowDown(){
 		if(CommandBase.controls.Operator.getAButton()){
 			elevatorSpeedConstant = defaultElevatorSpeedConstant;
@@ -59,9 +70,7 @@ public class TeleopWeekZero extends Command {
 			elevatorSpeedConstant = 0;
 		}
 	}
-	public void handleRawElevatorControl() {
-		SmartDashboard.putBoolean("Elevator Limit-Switch of Death", limitSwitchPressed);
-		
+	public void handleRawElevatorControl() {		
 		/*if(elevatorSpeedConstant != 0 && limitSwitchPressed){
 			elevatorSpeedConstant = 0;
 		}
@@ -82,10 +91,20 @@ public class TeleopWeekZero extends Command {
 			//CommandBase.elevator.set(lastSpeed);
 		}
 		SmartDashboard.putNumber("e-Lever Speed: ", elevatorSpeed);
+		if(CommandBase.drivetrain.getDriveMode() != DriveTrainMode.ENDGAME){
+			double actuatorSpeed = -CommandBase.controls.Operator.getY(Hand.kLeft);
+			CommandBase.cargo.setArm(actuatorSpeed*0.8);
+			CommandBase.cargo.getSensor(1);
 
-		double actuatorSpeed = -CommandBase.controls.Operator.getY(Hand.kLeft);
-		CommandBase.cargo.setArm(actuatorSpeed*0.7);
-		CommandBase.cargo.getSensor(1);
+		}
+		else{
+			double actuatorSpeed = -CommandBase.controls.Driver.getY(Hand.kRight);
+			CommandBase.cargo.setArm(actuatorSpeed*0.8);
+			CommandBase.cargo.getSensor(1);
+
+
+
+		}
 	}
 
 	private void handleDriving() {
@@ -98,9 +117,9 @@ public class TeleopWeekZero extends Command {
 		triggerRight = CommandBase.controls.Driver.getTriggerAxis(Hand.kRight);
 
 		/* If both triggers are equal in value, allow them to cancel each other out */
-		forwardSpeed = (triggerLeft - triggerRight);
+		forwardSpeed = (triggerLeft - triggerRight) * 0.9;
 
-		if(CommandBase.drivetrain.getDriveMode() == DriveTrainMode.CARGO){
+		if(CommandBase.drivetrain.getDriveMode() == DriveTrainMode.CARGO || CommandBase.drivetrain.getDriveMode() == DriveTrainMode.ENDGAME){
 			lateralSteeringSpeed = CommandBase.controls.Driver.getX(Hand.kLeft);
 
 		}
@@ -132,7 +151,7 @@ public class TeleopWeekZero extends Command {
 		} else {
 			CommandBase.drivetrain.drive(-lateralSteeringSpeed, lateralSteeringSpeed);
 		}
-
+		
 		//Debugging
 		SmartDashboard.putNumber("Lateral Steering Speed", lateralSteeringSpeed);
 		SmartDashboard.putNumber("Left Trigger", triggerLeft);
@@ -148,10 +167,29 @@ public class TeleopWeekZero extends Command {
 	}
 
 	private void handlePistons() {
-		if (CommandBase.controls.Operator.getBumperPressed(Hand.kRight)) {
-			pushHatch.cancel();
-			pushHatch = new PushHatch();
-			pushHatch.start();
+		SmartDashboard.putBoolean("E-Lever Lock State", CommandBase.endgame.isOpen());
+		if(CommandBase.drivetrain.getDriveMode() == DriveTrainMode.ENDGAME){
+			if(CommandBase.controls.Driver.getAButtonPressed()){
+				CommandBase.endgame.retractLift();
+			}	
+			if(CommandBase.controls.Driver.getYButtonPressed()){
+				CommandBase.endgame.extendLift();
+			}
+			if(CommandBase.controls.Driver.getBButtonPressed()){
+				if(CommandBase.endgame.isOpen()){
+					CommandBase.endgame.extendLock();
+				}
+				else{
+					CommandBase.endgame.retractLock();
+				}
+			}
+		}
+		else{
+			if (CommandBase.controls.Operator.getBumperPressed(Hand.kRight)) {
+				pushHatch.cancel();
+				pushHatch = new PushHatch();
+				pushHatch.start();
+			}
 		}
 	}
 
